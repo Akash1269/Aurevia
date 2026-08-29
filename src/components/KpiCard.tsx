@@ -12,7 +12,7 @@ interface KpiCardProps {
 
 export function KpiCard({ icon: Icon, label, value, badge, sublabel }: KpiCardProps) {
   return (
-    <div className={primitives.card}>
+    <div className={`${primitives.card} ${styles.card}`}>
       <div className={styles.label}>
         <Icon width={16} height={16} />
         <span>{label}</span>
@@ -21,7 +21,7 @@ export function KpiCard({ icon: Icon, label, value, badge, sublabel }: KpiCardPr
         <span className={primitives.bigNumber}>{value}</span>
         {badge && <span className={primitives.badge}>{badge}</span>}
       </div>
-      {sublabel && <div className={primitives.mutedText}>{sublabel}</div>}
+      {sublabel && <div className={`${primitives.mutedText} ${styles.sublabel}`}>{sublabel}</div>}
     </div>
   )
 }

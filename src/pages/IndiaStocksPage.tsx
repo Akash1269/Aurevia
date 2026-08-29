@@ -81,37 +81,43 @@ export function IndiaStocksPage() {
       </div>
 
       <div className={styles.insightsRow}>
-        <div className={primitives.card}>
+        <div className={`${primitives.card} ${styles.insightsCard}`}>
           <div className={styles.donutTitle}>By Sector</div>
-          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={sectorDonutData} />}
+          <div className={styles.insightsBody}>
+            {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={sectorDonutData} />}
+          </div>
         </div>
-        <div className={primitives.card}>
+        <div className={`${primitives.card} ${styles.insightsCard}`}>
           <div className={styles.donutTitle}>Top 5 Gainers</div>
-          {topGainers.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <RankedList
-              items={topGainers.map((r) => ({
-                key: r.symbol,
-                label: r.symbol,
-                value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
-              }))}
-            />
-          )}
+          <div className={styles.insightsBody}>
+            {topGainers.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <RankedList
+                items={topGainers.map((r) => ({
+                  key: r.symbol,
+                  label: r.symbol,
+                  value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
+                }))}
+              />
+            )}
+          </div>
         </div>
-        <div className={primitives.card}>
+        <div className={`${primitives.card} ${styles.insightsCard}`}>
           <div className={styles.donutTitle}>Top 5 Losers</div>
-          {topLosers.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <RankedList
-              items={topLosers.map((r) => ({
-                key: r.symbol,
-                label: r.symbol,
-                value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
-              }))}
-            />
-          )}
+          <div className={styles.insightsBody}>
+            {topLosers.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <RankedList
+                items={topLosers.map((r) => ({
+                  key: r.symbol,
+                  label: r.symbol,
+                  value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
+                }))}
+              />
+            )}
+          </div>
         </div>
       </div>
 

@@ -3,3 +3,15 @@
   font-weight: 500;
   color: var(--card-dark-text);
 }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+}
+
+.chartBody {
+  flex: 1;
+  min-height: 190px;
+}

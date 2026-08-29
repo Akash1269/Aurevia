@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { AllocationBar } from '../components/AllocationBar'
+import { AllocationDonut, type DonutDatum } from '../components/AllocationDonut'
 import { AllocationLegend } from '../components/AllocationLegend'
-import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { TrendingDown, TrendingUp, Trophy, Wallet } from 'lucide-react'
 import { InvestedVsCurrentChart, type InvestedVsCurrentDatum } from '../components/InvestedVsCurrentChart'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
@@ -10,7 +11,7 @@ import { formatInr, formatPct } from '../utils/format'
 import styles from './OverviewPage.module.css'
 
 export function OverviewPage() {
-  const { overview, topHoldings, currencyExposure } = usePortfolioData()
+  const { overview, topHoldings, currencyExposure, results } = usePortfolioData()
 
   const allocationSegments = overview.categories.map((c) => ({
     label: c.label,
@@ -18,6 +19,18 @@ export function OverviewPage() {
     amountInr: c.currentInr,
     color: c.color,
   }))
+
+  const totalHoldings =
+    results.usStocks.rows.length +
+    results.indiaStocks.rows.length +
+    results.mutualFunds.rows.length +
+    results.esops.rows.length +
+    results.savings.rows.length +
+    results.fixedDeposits.rows.length +
+    results.pf.rows.length
+
+  const categoriesUp = overview.categories.filter((c) => c.gainInr > 0).length
+  const categoriesDown = overview.categories.filter((c) => c.gainInr < 0).length
 
   const chartData: InvestedVsCurrentDatum[] = overview.categories.map((c) => ({
     label: c.label.replace(' Accounts', '').replace(' Deposits', ''),
@@ -28,6 +41,14 @@ export function OverviewPage() {
 
   const maxExposure = Math.max(...currencyExposure.map((c) => c.amountInr), 1)
 
+  const typeDonutData: DonutDatum[] = overview.categories.map((c) => ({
+    name: c.label,
+    value: c.currentInr,
+    color: c.color,
+  }))
+
+  const bestPerformer = overview.categories.reduce((best, c) => (c.gainPct > best.gainPct ? c : best))
+
   return (
     <>
       <div className={styles.topRow}>
@@ -36,14 +57,25 @@ export function OverviewPage() {
           label="Current Value"
           value={formatInr(overview.totalCurrentInr)}
           badge={formatPct(overview.totalGainPct)}
+          sublabel={`${totalHoldings} holdings across ${overview.categories.length} categories`}
         />
-        <KpiCard icon={Wallet} label="Total Invested" value={formatInr(overview.totalInvestedInr)} />
+        <KpiCard
+          icon={Wallet}
+          label="Total Invested"
+          value={formatInr(overview.totalInvestedInr)}
+          sublabel={`${categoriesUp} up · ${categoriesDown} down`}
+        />
         <KpiCard
           icon={overview.totalGainInr >= 0 ? TrendingUp : TrendingDown}
           label="Overall Gain / Loss"
           value={formatInr(overview.totalGainInr)}
           sublabel={formatPct(overview.totalGainPct)}
         />
+        <KpiCard icon={Trophy} label="Best Performer" value={bestPerformer.label} badge={formatPct(bestPerformer.gainPct)} />
+      </div>
+
+      <div className={styles.portfolioRow}>
+        <InvestedVsCurrentChart data={chartData} />
         <div className={`${primitives.card} ${styles.portfolioCard}`}>
           <div className={styles.portfolioHeader}>
             <span className={primitives.cardTitle}>My Portfolio</span>
@@ -53,30 +85,19 @@ export function OverviewPage() {
           </div>
           <div className={styles.portfolioTotal}>{formatInr(overview.totalCurrentInr)}</div>
           <div className={primitives.mutedText}>{formatPct(overview.totalGainPct)} all-time</div>
-          <div style={{ marginTop: 'var(--space-6)' }}>
+          <div className={styles.allocationSection}>
             <AllocationBar segments={allocationSegments} />
             <AllocationLegend entries={allocationSegments} />
           </div>
         </div>
       </div>
 
-      <InvestedVsCurrentChart data={chartData} />
-
       <div className={styles.bottomRow}>
-        <div className={`${primitives.card} ${styles.listCard}`}>
-          <div className={primitives.cardTitle}>Category Breakdown</div>
-          {overview.categories.map((c) => (
-            <div key={c.key} className={styles.rankRow}>
-              <span className={styles.rankLeft}>
-                <span className={styles.rankDot} style={{ background: c.color }} />
-                {c.label}
-              </span>
-              <span className={styles.rankRight}>
-                <span>{formatInr(c.currentInr)}</span>
-                <span className={primitives.mutedText}>{formatPct(c.gainPct)}</span>
-              </span>
-            </div>
-          ))}
+        <div className={`${primitives.card} ${styles.donutCard}`}>
+          <div className={styles.donutTitle}>By Type</div>
+          <div className={styles.donutBody}>
+            <AllocationDonut data={typeDonutData} />
+          </div>
         </div>
 
         <div className={`${primitives.card} ${styles.listCard}`}>
@@ -101,18 +122,20 @@ export function OverviewPage() {
 
         <div className={`${primitives.card} ${styles.listCard}`}>
           <div className={primitives.cardTitle}>Currency Exposure</div>
-          {currencyExposure.map((entry) => (
-            <div key={entry.code} className={styles.exposureRow}>
-              <span className={styles.exposureLeft}>
-                <span className={styles.exposureIcon}>{entry.code.slice(0, 2)}</span>
-                {entry.code}
-              </span>
-              <span className={styles.exposureBarTrack}>
-                <span className={styles.exposureBarFill} style={{ width: `${(entry.amountInr / maxExposure) * 100}%` }} />
-              </span>
-              <span>{formatInr(entry.amountInr)}</span>
-            </div>
-          ))}
+          <div className={styles.exposureList}>
+            {currencyExposure.map((entry) => (
+              <div key={entry.code} className={styles.exposureRow}>
+                <span className={styles.exposureLeft}>
+                  <span className={styles.exposureIcon}>{entry.code.slice(0, 2)}</span>
+                  {entry.code}
+                </span>
+                <span className={styles.exposureBarTrack}>
+                  <span className={styles.exposureBarFill} style={{ width: `${(entry.amountInr / maxExposure) * 100}%` }} />
+                </span>
+                <span>{formatInr(entry.amountInr)}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

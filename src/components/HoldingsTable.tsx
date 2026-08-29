@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
+import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react'
 import { useMemo, useState, type ReactNode } from 'react'
 import styles from './HoldingsTable.module.css'
 
@@ -68,12 +68,12 @@ export function HoldingsTable<T extends { displayName: string }>({
                     <span className={cx(styles.sortIcon, sort?.key === col.key && styles.sortIconActive)}>
                       {sort?.key === col.key ? (
                         sort.direction === 'asc' ? (
-                          <ArrowUp size={12} />
+                          <ChevronUp size={12} />
                         ) : (
-                          <ArrowDown size={12} />
+                          <ChevronDown size={12} />
                         )
                       ) : (
-                        <ArrowUpDown size={12} />
+                        <ChevronsUpDown size={12} />
                       )}
                     </span>
                   )}

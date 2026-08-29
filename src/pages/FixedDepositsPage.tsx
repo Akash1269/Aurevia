@@ -82,7 +82,7 @@ export function FixedDepositsPage() {
         </div>
         <div className={`${primitives.card} ${styles.donutCard}`}>
           <div className={styles.donutTitle}>By Bank</div>
-          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
+          <div className={styles.donutBody}>{rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}</div>
         </div>
       </div>
     </>

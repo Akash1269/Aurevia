@@ -3,10 +3,12 @@
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-5) var(--space-3);
-  border-right: 1px solid var(--border);
-  min-height: 100vh;
-  position: sticky;
-  top: 0;
+  margin: var(--space-4);
+  border-radius: var(--radius);
+  background: var(--card-dark-bg);
+  border: 1px solid var(--card-dark-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  height: calc(100% - var(--space-4) * 2);
 }
 
 .logo {
@@ -29,20 +31,21 @@
   gap: var(--space-3);
   padding: var(--space-3);
   border-radius: var(--radius-sm);
-  color: var(--text);
+  color: var(--card-dark-muted);
   text-decoration: none;
   font-size: var(--text-sm);
   white-space: nowrap;
 }
 
 .navItem:hover {
-  background: var(--bg);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--card-dark-text);
 }
 
 .navItemActive,
 .navItemActive:hover {
-  background: var(--text-h);
-  color: var(--card-bg);
+  background: var(--card-dark-text);
+  color: var(--card-dark-bg);
 }
 
 .gear {
@@ -54,7 +57,7 @@
   border-radius: var(--radius-sm);
   border: none;
   background: transparent;
-  color: var(--text);
+  color: var(--card-dark-muted);
   cursor: not-allowed;
   opacity: 0.5;
   margin-top: auto;
@@ -63,6 +66,12 @@
 }
 
 @media (max-width: 720px) {
+  .sidebar {
+    margin: var(--space-3);
+    padding: var(--space-4) var(--space-2);
+    height: calc(100% - var(--space-3) * 2);
+  }
+
   .navLabel {
     display: none;
   }
