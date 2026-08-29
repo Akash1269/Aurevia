@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+# Personal financial data - never commit real portfolio numbers
+public/data/*
+.claude/settings.local.json
