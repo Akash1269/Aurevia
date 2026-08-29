@@ -10,7 +10,7 @@ export async function loadCsv<T>(path: string): Promise<T[]> {
     header: true,
     dynamicTyping: true,
     skipEmptyLines: true,
-    transformHeader: (h) => h.trim(),
+    transformHeader: (h) => h.trim().toLowerCase(),
   })
   if (errors.length) {
     console.warn(`CSV parse warnings for ${path}`, errors)

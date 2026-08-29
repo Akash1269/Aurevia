@@ -11,9 +11,11 @@ export interface HoldingsColumn<T> {
 export function HoldingsTable<T extends { displayName: string }>({
   columns,
   rows,
+  footer,
 }: {
   columns: HoldingsColumn<T>[]
   rows: T[]
+  footer?: Partial<Record<string, ReactNode>>
 }) {
   return (
     <div className={styles.wrapper}>
@@ -28,8 +30,8 @@ export function HoldingsTable<T extends { displayName: string }>({
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.displayName}>
+          {rows.map((row, index) => (
+            <tr key={`${row.displayName}-${index}`}>
               {columns.map((col) => (
                 <td key={col.key} className={col.align === 'right' ? styles.right : undefined}>
                   {col.render(row)}
@@ -38,6 +40,17 @@ export function HoldingsTable<T extends { displayName: string }>({
             </tr>
           ))}
         </tbody>
+        {footer && (
+          <tfoot>
+            <tr className={styles.footerRow}>
+              {columns.map((col) => (
+                <td key={col.key} className={col.align === 'right' ? styles.right : undefined}>
+                  {footer[col.key] ?? ''}
+                </td>
+              ))}
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   )

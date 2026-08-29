@@ -16,7 +16,9 @@ import type {
   MutualFundRow,
   Overview,
   OverviewCategory,
-  PfRow,
+  PfAccountSummaryRawRow,
+  PfContributionRawRow,
+  PfContributionRow,
   PortfolioResults,
   RatesMap,
   SavingsRow,
@@ -27,21 +29,24 @@ import type {
 export interface CategoryMetaEntry {
   key: string
   label: string
-  path: string
   color: string
 }
 
 export const CATEGORY_META: CategoryMetaEntry[] = [
-  { key: 'usStocks', label: 'US Stocks', path: '/data/us-stocks.csv', color: 'var(--alloc-1)' },
-  { key: 'indiaStocks', label: 'India Stocks', path: '/data/india-stocks.csv', color: 'var(--alloc-2)' },
-  { key: 'mutualFunds', label: 'Mutual Funds', path: '/data/mutual-funds-india.csv', color: 'var(--alloc-3)' },
-  { key: 'esops', label: 'ESOPs', path: '/data/esops.csv', color: 'var(--alloc-4)' },
-  { key: 'savings', label: 'Savings Accounts', path: '/data/savings-accounts.csv', color: 'var(--alloc-5)' },
-  { key: 'fixedDeposits', label: 'Fixed Deposits', path: '/data/fixed-deposits.csv', color: 'var(--alloc-6)' },
-  { key: 'pf', label: 'India PF', path: '/data/india-pf.csv', color: 'var(--alloc-7)' },
+  { key: 'usStocks', label: 'US Stocks', color: 'var(--alloc-1)' },
+  { key: 'indiaStocks', label: 'India Stocks', color: 'var(--alloc-2)' },
+  { key: 'mutualFunds', label: 'Mutual Funds', color: 'var(--alloc-3)' },
+  { key: 'esops', label: 'ESOPs', color: 'var(--alloc-4)' },
+  { key: 'savings', label: 'Savings Accounts', color: 'var(--alloc-5)' },
+  { key: 'fixedDeposits', label: 'Fixed Deposits', color: 'var(--alloc-6)' },
+  { key: 'pf', label: 'India PF', color: 'var(--alloc-7)' },
 ]
 
-export const RATES_PATH = '/data/currency-rates.csv'
+export function decoratePfContributions(rows: PfContributionRawRow[]): PfContributionRow[] {
+  return rows
+    .filter((row) => row.company && row.month)
+    .map((row) => ({ ...row, displayName: `${row.company} · ${row.month}` }))
+}
 
 export function ratesToMap(rows: CurrencyRateRow[]): RatesMap {
   const map: RatesMap = { INR: 1 }
@@ -220,18 +225,20 @@ export function computeFixedDeposits(
   return { rows: computed, totals: sumTotals(computed), error: null }
 }
 
-export function computePf(rows: PfRow[]): CategoryResult<ComputedPf> {
-  const computed = rows.map((row) => ({
-    ...row,
-    displayName: `${row.employer} · ${row.account_label}`,
-    invested: row.balance,
-    current: row.balance,
-    gain: 0,
-    gainPct: 0,
-    investedInr: row.balance,
-    currentInr: row.balance,
-    gainInr: 0,
-  }))
+export function computePf(rows: PfAccountSummaryRawRow[]): CategoryResult<ComputedPf> {
+  const computed = rows
+    .filter((row) => row.company && row.member_id)
+    .map((row) => ({
+      ...row,
+      displayName: `${row.company} · ${row.member_id}`,
+      invested: row.current_balance,
+      current: row.current_balance,
+      gain: 0,
+      gainPct: 0,
+      investedInr: row.current_balance,
+      currentInr: row.current_balance,
+      gainInr: 0,
+    }))
   return { rows: computed, totals: sumTotals(computed), error: null }
 }
 

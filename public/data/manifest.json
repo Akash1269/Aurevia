@@ -1,0 +1,11 @@
+{
+  "currencyRates": "/data/currency-rates.csv",
+  "usStocks": "/data/us-stocks.csv",
+  "indiaStocks": "/data/india-stocks.csv",
+  "mutualFunds": "/data/mutual-funds-india.csv",
+  "esops": "/data/esops.csv",
+  "savings": "/data/savings-accounts.csv",
+  "fixedDeposits": "/data/fixed-deposits.csv",
+  "pf": "/data/PF/account-summary.csv",
+  "pfContributions": "/data/PF/contributions.csv"
+}

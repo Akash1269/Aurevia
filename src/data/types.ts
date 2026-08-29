@@ -1,5 +1,17 @@
 export type CurrencyCode = string
 
+export interface DataManifest {
+  currencyRates: string
+  usStocks: string
+  indiaStocks: string
+  mutualFunds: string
+  esops: string
+  savings: string
+  fixedDeposits: string
+  pf: string
+  pfContributions: string
+}
+
 export interface UsStockRow {
   symbol: string
   name: string
@@ -52,13 +64,30 @@ export interface FixedDepositRow {
   currency: CurrencyCode
 }
 
-export interface PfRow {
-  employer: string
-  account_label: string
-  balance: number
-  employee_contribution_monthly: number
-  employer_contribution_monthly: number
-  interest_rate_pct: number
+export interface PfContributionRawRow {
+  company: string
+  month: string
+  employee: number
+  employer: number
+  pension: number
+  total: number
+}
+
+export interface PfContributionRow extends PfContributionRawRow {
+  displayName: string
+}
+
+export interface PfAccountSummaryRawRow {
+  member_id: string
+  company: string
+  years: number
+  current_balance: number
+  adjustments: number
+  employee: number
+  employer: number
+  interest_earned: number
+  transfer_in: number
+  withdrawal: number
 }
 
 export interface CurrencyRateRow {
@@ -83,7 +112,7 @@ export type ComputedMutualFund = MutualFundRow & WithComputed
 export type ComputedEsop = EsopRow & WithComputed & { unvestedOptions: number }
 export type ComputedSavings = SavingsRow & WithComputed
 export type ComputedFixedDeposit = FixedDepositRow & WithComputed & { accrualPct: number }
-export type ComputedPf = PfRow & WithComputed
+export type ComputedPf = PfAccountSummaryRawRow & WithComputed
 
 export interface CategoryTotals {
   invested: number

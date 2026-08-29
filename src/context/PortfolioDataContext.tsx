@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { loadCsv } from '../data/loadCsv'
+import { loadManifest } from '../data/manifest'
 import {
-  RATES_PATH,
   buildOverview,
   computeEsops,
   computeFixedDeposits,
@@ -10,6 +10,7 @@ import {
   computePf,
   computeSavings,
   computeUsStocks,
+  decoratePfContributions,
   getCurrencyExposure,
   getTopHoldings,
   ratesToMap,
@@ -24,13 +25,35 @@ import type {
   IndiaStockRow,
   MutualFundRow,
   Overview,
-  PfRow,
+  PfAccountSummaryRawRow,
+  PfContributionRawRow,
+  PfContributionRow,
   PortfolioResults,
   RatesMap,
   SavingsRow,
   TopHolding,
   UsStockRow,
 } from '../data/types'
+
+interface SupplementalState<T> {
+  rows: T[]
+  error: string | null
+}
+
+function emptySupplemental<T>(): SupplementalState<T> {
+  return { rows: [], error: null }
+}
+
+function fromSettledRaw<TRow, TDecorated>(
+  settled: PromiseSettledResult<TRow[]>,
+  decorate: (rows: TRow[]) => TDecorated[],
+): SupplementalState<TDecorated> {
+  if (settled.status === 'fulfilled') {
+    return { rows: decorate(settled.value), error: null }
+  }
+  const message = settled.reason instanceof Error ? settled.reason.message : 'Failed to load data'
+  return { rows: [], error: message }
+}
 
 interface PortfolioDataValue {
   loading: boolean
@@ -39,6 +62,7 @@ interface PortfolioDataValue {
   overview: Overview
   topHoldings: TopHolding[]
   currencyExposure: CurrencyExposureEntry[]
+  pfContributions: SupplementalState<PfContributionRow>
   refresh: () => void
 }
 
@@ -78,6 +102,7 @@ const PortfolioDataContext = createContext<PortfolioDataValue | null>(null)
 export function PortfolioDataProvider({ children }: { children: ReactNode }) {
   const [ratesMap, setRatesMap] = useState<RatesMap>({ INR: 1 })
   const [results, setResults] = useState<PortfolioResults>(emptyResults)
+  const [pfContributions, setPfContributions] = useState<SupplementalState<PfContributionRow>>(emptySupplemental)
   const [loading, setLoading] = useState(true)
   const [version, setVersion] = useState(0)
 
@@ -85,16 +110,20 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     let cancelled = false
 
     async function load() {
-      const [ratesRes, usStocksRes, indiaStocksRes, mutualFundsRes, esopsRes, savingsRes, fixedDepositsRes, pfRes] =
+      const manifest = await loadManifest()
+      if (cancelled) return
+
+      const [ratesRes, usStocksRes, indiaStocksRes, mutualFundsRes, esopsRes, savingsRes, fixedDepositsRes, pfRes, pfContributionsRes] =
         await Promise.allSettled([
-          loadCsv<CurrencyRateRow>(RATES_PATH),
-          loadCsv<UsStockRow>('/data/us-stocks.csv'),
-          loadCsv<IndiaStockRow>('/data/india-stocks.csv'),
-          loadCsv<MutualFundRow>('/data/mutual-funds-india.csv'),
-          loadCsv<EsopRow>('/data/esops.csv'),
-          loadCsv<SavingsRow>('/data/savings-accounts.csv'),
-          loadCsv<FixedDepositRow>('/data/fixed-deposits.csv'),
-          loadCsv<PfRow>('/data/india-pf.csv'),
+          loadCsv<CurrencyRateRow>(manifest.currencyRates),
+          loadCsv<UsStockRow>(manifest.usStocks),
+          loadCsv<IndiaStockRow>(manifest.indiaStocks),
+          loadCsv<MutualFundRow>(manifest.mutualFunds),
+          loadCsv<EsopRow>(manifest.esops),
+          loadCsv<SavingsRow>(manifest.savings),
+          loadCsv<FixedDepositRow>(manifest.fixedDeposits),
+          loadCsv<PfAccountSummaryRawRow>(manifest.pf),
+          loadCsv<PfContributionRawRow>(manifest.pfContributions),
         ])
 
       if (cancelled) return
@@ -111,6 +140,9 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         fixedDeposits: fromSettled(fixedDepositsRes, (rows) => computeFixedDeposits(rows, rates)),
         pf: fromSettled(pfRes, (rows) => computePf(rows)),
       })
+
+      setPfContributions(fromSettledRaw(pfContributionsRes, decoratePfContributions))
+
       setLoading(false)
     }
 
@@ -130,8 +162,17 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
   const currencyExposure = useMemo(() => getCurrencyExposure(results), [results])
 
   const value = useMemo<PortfolioDataValue>(
-    () => ({ loading, ratesMap, results, overview, topHoldings, currencyExposure, refresh }),
-    [loading, ratesMap, results, overview, topHoldings, currencyExposure, refresh],
+    () => ({
+      loading,
+      ratesMap,
+      results,
+      overview,
+      topHoldings,
+      currencyExposure,
+      pfContributions,
+      refresh,
+    }),
+    [loading, ratesMap, results, overview, topHoldings, currencyExposure, pfContributions, refresh],
   )
 
   return <PortfolioDataContext.Provider value={value}>{children}</PortfolioDataContext.Provider>

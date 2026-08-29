@@ -24,10 +24,25 @@
   white-space: nowrap;
 }
 
-.table tr:last-child td {
+.table tbody tr:last-child td {
   border-bottom: none;
 }
 
+.footerRow td {
+  padding: 12px;
+  color: var(--text-h);
+  font-weight: 600;
+  border-top: 2px solid var(--border);
+  border-bottom: none;
+  white-space: nowrap;
+}
+
 .right {
+  text-align: right;
+}
+
+/* Beats the ".table th" base rule's specificity so right-aligned headers
+   actually line up with their right-aligned values instead of staying left. */
+.table th.right {
   text-align: right;
 }

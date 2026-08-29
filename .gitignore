@@ -5,4 +5,6 @@ dist-ssr
 
 # Personal financial data - never commit real portfolio numbers
 public/data/*
+# ...except the manifest, which only maps categories to file paths, not figures
+!public/data/manifest.json
 .claude/settings.local.json
