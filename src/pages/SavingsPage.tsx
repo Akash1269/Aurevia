@@ -1,13 +1,13 @@
 import { AllocationDonut, type DonutDatum } from '../components/AllocationDonut'
+import { Card } from '../components/Card'
 import { colorForIndex } from '../utils/colors'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Calendar, Landmark, PiggyBank, Wallet } from 'lucide-react'
+import { Calendar, Landmark, PieChart, PiggyBank, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedSavings } from '../data/types'
-import primitives from '../styles/primitives.module.css'
 import { formatInr } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
@@ -60,13 +60,10 @@ export function SavingsPage() {
         <KpiCard icon={PiggyBank} label="Est. Annual Interest" value={formatInr(estimatedAnnualInterest)} />
       </div>
       <div className={styles.body}>
-        <div className={primitives.card}>
-          {rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}
-        </div>
-        <div className={`${primitives.card} ${styles.donutCard}`}>
-          <div className={styles.donutTitle}>By Bank</div>
-          <div className={styles.donutBody}>{rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}</div>
-        </div>
+        <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+        <Card icon={PieChart} title="By Bank" align="center">
+          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
+        </Card>
       </div>
     </>
   )

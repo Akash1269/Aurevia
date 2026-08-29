@@ -1,13 +1,13 @@
+import { Card } from '../components/Card'
 import { ContributionTimelineChart, type ContributionTimelinePoint } from '../components/ContributionTimelineChart'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Building2, Calendar, Shield, Wallet } from 'lucide-react'
+import { Building2, Calendar, History, ListChecks, Shield, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedPf, PfContributionRow } from '../data/types'
-import primitives from '../styles/primitives.module.css'
 import { formatInr, formatMonth, formatSignedInr, monthSortKey } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
@@ -117,17 +117,11 @@ export function PfPage() {
         <KpiCard icon={Calendar} label="Total Interest Earned" value={formatInr(totalInterestEarned)} />
         <KpiCard icon={Building2} label="Accounts" value={String(rows.length)} />
       </div>
-      <div className={primitives.card}>
-        <div className={primitives.cardTitle} style={{ marginBottom: 'var(--space-5)' }}>
-          Account Summary
-        </div>
+      <Card icon={ListChecks} title="Account Summary">
         {rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={accountSummaryColumns} rows={rows} />}
-      </div>
+      </Card>
       {timeline.length > 0 && <ContributionTimelineChart data={timeline} />}
-      <div className={primitives.card}>
-        <div className={primitives.cardTitle} style={{ marginBottom: 'var(--space-5)' }}>
-          Monthly Contribution History
-        </div>
+      <Card icon={History} title="Monthly Contribution History">
         {pfContributions.error ? (
           <ErrorState message={pfContributions.error} />
         ) : contributionRows.length === 0 ? (
@@ -145,7 +139,7 @@ export function PfPage() {
             }}
           />
         )}
-      </div>
+      </Card>
     </>
   )
 }

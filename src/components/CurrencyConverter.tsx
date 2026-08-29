@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { ArrowLeftRight } from 'lucide-react'
+import { Card } from './Card'
 import { toInr } from '../data/portfolio'
 import type { RatesMap } from '../data/types'
 import primitives from '../styles/primitives.module.css'
@@ -15,10 +17,7 @@ export function CurrencyConverter({ ratesMap }: { ratesMap: RatesMap }) {
   const unitRate = (ratesMap[from] ?? 0) / (ratesMap[to] ?? 1)
 
   return (
-    <div className={primitives.card}>
-      <div className={primitives.cardTitle} style={{ marginBottom: 'var(--space-6)' }}>
-        Currency Converter
-      </div>
+    <Card icon={ArrowLeftRight} title="Currency Converter">
       <div className={styles.row}>
         <input
           type="number"
@@ -50,6 +49,6 @@ export function CurrencyConverter({ ratesMap }: { ratesMap: RatesMap }) {
           1 {from} = {unitRate.toFixed(4)} {to}
         </span>
       </div>
-    </div>
+    </Card>
   )
 }

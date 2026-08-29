@@ -1,7 +1,8 @@
+import { Card } from '../components/Card'
 import { CurrencyConverter } from '../components/CurrencyConverter'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
+import { Coins } from 'lucide-react'
 import { usePortfolioData } from '../context/PortfolioDataContext'
-import primitives from '../styles/primitives.module.css'
 import { formatInr } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
@@ -24,12 +25,9 @@ export function CurrencyConverterPage() {
 
   return (
     <div className={styles.body}>
-      <div className={primitives.card}>
-        <div className={primitives.cardTitle} style={{ marginBottom: 'var(--space-5)' }}>
-          Reference Rates
-        </div>
+      <Card icon={Coins} title="Reference Rates">
         <HoldingsTable columns={columns} rows={rows} />
-      </div>
+      </Card>
       <CurrencyConverter ratesMap={ratesMap} />
     </div>
   )

@@ -14,25 +14,9 @@
   min-width: 0;
 }
 
-.portfolioCard {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-width: 0;
-}
-
 .allocationSection {
   margin-top: auto;
   padding-top: var(--space-6);
-}
-
-.portfolioHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-bottom: var(--space-1);
 }
 
 .portfolioTotal {
@@ -40,27 +24,6 @@
   font-weight: 600;
   color: var(--text-h);
   margin: var(--space-2) 0 var(--space-1);
-}
-
-.donutTitle {
-  font-size: var(--text-md);
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: var(--space-1);
-}
-
-.donutCard {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  height: 100%;
-}
-
-.donutBody {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .bottomRow {
@@ -71,20 +34,10 @@
   min-width: 0;
 }
 
-.listCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-  height: 100%;
-}
-
 .exposureList {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  flex: 1;
-  justify-content: center;
 }
 
 .holdingsScroll {

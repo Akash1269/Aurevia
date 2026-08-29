@@ -1,4 +1,5 @@
 import { AllocationDonut, type DonutDatum } from '../components/AllocationDonut'
+import { Card } from '../components/Card'
 import { colorForIndex } from '../utils/colors'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
@@ -6,11 +7,10 @@ import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
 import { RankedList } from '../components/RankedList'
 import { StockHeatmap, type HeatmapDatum } from '../components/StockHeatmap'
-import { ListChecks, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { LayoutGrid, ListChecks, PieChart, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedIndiaStock } from '../data/types'
-import primitives from '../styles/primitives.module.css'
 import { formatInr, formatPct, formatSignedInr } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
@@ -81,54 +81,42 @@ export function IndiaStocksPage() {
       </div>
 
       <div className={styles.insightsRow}>
-        <div className={`${primitives.card} ${styles.insightsCard}`}>
-          <div className={styles.donutTitle}>By Sector</div>
-          <div className={styles.insightsBody}>
-            {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={sectorDonutData} />}
-          </div>
-        </div>
-        <div className={`${primitives.card} ${styles.insightsCard}`}>
-          <div className={styles.donutTitle}>Top 5 Gainers</div>
-          <div className={styles.insightsBody}>
-            {topGainers.length === 0 ? (
-              <EmptyState />
-            ) : (
-              <RankedList
-                items={topGainers.map((r) => ({
-                  key: r.symbol,
-                  label: r.symbol,
-                  value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
-                }))}
-              />
-            )}
-          </div>
-        </div>
-        <div className={`${primitives.card} ${styles.insightsCard}`}>
-          <div className={styles.donutTitle}>Top 5 Losers</div>
-          <div className={styles.insightsBody}>
-            {topLosers.length === 0 ? (
-              <EmptyState />
-            ) : (
-              <RankedList
-                items={topLosers.map((r) => ({
-                  key: r.symbol,
-                  label: r.symbol,
-                  value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
-                }))}
-              />
-            )}
-          </div>
-        </div>
+        <Card icon={PieChart} title="By Sector" align="center">
+          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={sectorDonutData} />}
+        </Card>
+        <Card icon={TrendingUp} title="Top 5 Gainers" align="center">
+          {topGainers.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <RankedList
+              items={topGainers.map((r) => ({
+                key: r.symbol,
+                label: r.symbol,
+                value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
+              }))}
+            />
+          )}
+        </Card>
+        <Card icon={TrendingDown} title="Top 5 Losers" align="center">
+          {topLosers.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <RankedList
+              items={topLosers.map((r) => ({
+                key: r.symbol,
+                label: r.symbol,
+                value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
+              }))}
+            />
+          )}
+        </Card>
       </div>
 
-      <div className={primitives.card}>
-        <div className={styles.donutTitle}>By Stock (size = value, color = gain/loss)</div>
+      <Card icon={LayoutGrid} title="By Stock (size = value, color = gain/loss)">
         {rows.length === 0 ? <EmptyState /> : <StockHeatmap data={heatmapData} />}
-      </div>
+      </Card>
 
-      <div className={primitives.card}>
-        {rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}
-      </div>
+      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>
   )
 }

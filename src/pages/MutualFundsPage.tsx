@@ -1,3 +1,4 @@
+import { Card } from '../components/Card'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { GainText } from '../components/GainText'
@@ -6,7 +7,6 @@ import { Layers, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedMutualFund } from '../data/types'
-import primitives from '../styles/primitives.module.css'
 import { formatInr, formatPct } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
@@ -52,9 +52,7 @@ export function MutualFundsPage() {
         />
         <KpiCard icon={Layers} label="Number of Funds" value={String(rows.length)} />
       </div>
-      <div className={primitives.card}>
-        {rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}
-      </div>
+      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>
   )
 }

@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { AllocationBar } from '../components/AllocationBar'
 import { AllocationDonut, type DonutDatum } from '../components/AllocationDonut'
 import { AllocationLegend } from '../components/AllocationLegend'
-import { TrendingDown, TrendingUp, Trophy, Wallet } from 'lucide-react'
+import { ArrowLeftRight, ListChecks, PieChart, TrendingDown, TrendingUp, Trophy, Wallet } from 'lucide-react'
+import { Card } from '../components/Card'
 import { InvestedVsCurrentChart, type InvestedVsCurrentDatum } from '../components/InvestedVsCurrentChart'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
@@ -76,32 +77,30 @@ export function OverviewPage() {
 
       <div className={styles.portfolioRow}>
         <InvestedVsCurrentChart data={chartData} />
-        <div className={`${primitives.card} ${styles.portfolioCard}`}>
-          <div className={styles.portfolioHeader}>
-            <span className={primitives.cardTitle}>My Portfolio</span>
+        <Card
+          icon={Wallet}
+          title="My Portfolio"
+          actions={
             <Link to="/currency-converter" className={primitives.pillButton}>
               Currency Converter →
             </Link>
-          </div>
+          }
+        >
           <div className={styles.portfolioTotal}>{formatInr(overview.totalCurrentInr)}</div>
           <div className={primitives.mutedText}>{formatPct(overview.totalGainPct)} all-time</div>
           <div className={styles.allocationSection}>
             <AllocationBar segments={allocationSegments} />
             <AllocationLegend entries={allocationSegments} />
           </div>
-        </div>
+        </Card>
       </div>
 
       <div className={styles.bottomRow}>
-        <div className={`${primitives.card} ${styles.donutCard}`}>
-          <div className={styles.donutTitle}>By Type</div>
-          <div className={styles.donutBody}>
-            <AllocationDonut data={typeDonutData} />
-          </div>
-        </div>
+        <Card icon={PieChart} title="By Type" align="center">
+          <AllocationDonut data={typeDonutData} />
+        </Card>
 
-        <div className={`${primitives.card} ${styles.listCard}`}>
-          <div className={primitives.cardTitle}>Top Holdings</div>
+        <Card icon={ListChecks} title="Top Holdings">
           <div className={styles.holdingsScroll}>
             {topHoldings.map((h) => (
               <div key={h.key} className={styles.holdingCard}>
@@ -118,10 +117,9 @@ export function OverviewPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
-        <div className={`${primitives.card} ${styles.listCard}`}>
-          <div className={primitives.cardTitle}>Currency Exposure</div>
+        <Card icon={ArrowLeftRight} title="Currency Exposure" align="center">
           <div className={styles.exposureList}>
             {currencyExposure.map((entry) => (
               <div key={entry.code} className={styles.exposureRow}>
@@ -136,7 +134,7 @@ export function OverviewPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       </div>
     </>
   )
