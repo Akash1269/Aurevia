@@ -12,8 +12,8 @@ interface RateDisplayRow {
 }
 
 const columns: HoldingsColumn<RateDisplayRow>[] = [
-  { key: 'code', label: 'Currency', render: (r) => r.code },
-  { key: 'rate', label: '1 unit = ₹', align: 'right', render: (r) => formatInr(r.rate) },
+  { key: 'code', label: 'Currency', render: (r) => r.code, sortValue: (r) => r.code },
+  { key: 'rate', label: '1 unit = ₹', align: 'right', render: (r) => formatInr(r.rate), sortValue: (r) => r.rate },
 ]
 
 export function CurrencyConverterPage() {
@@ -25,7 +25,7 @@ export function CurrencyConverterPage() {
   return (
     <div className={styles.body}>
       <div className={primitives.card}>
-        <div className={primitives.cardTitle} style={{ marginBottom: 16 }}>
+        <div className={primitives.cardTitle} style={{ marginBottom: 'var(--space-5)' }}>
           Reference Rates
         </div>
         <HoldingsTable columns={columns} rows={rows} />

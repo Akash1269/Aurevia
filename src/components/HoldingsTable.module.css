@@ -5,20 +5,20 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 
 .table th {
   text-align: left;
   color: var(--text);
   font-weight: 500;
-  padding: 10px 12px;
+  padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 
 .table td {
-  padding: 12px;
+  padding: var(--space-4);
   border-bottom: 1px solid var(--border);
   color: var(--text-h);
   white-space: nowrap;
@@ -29,7 +29,7 @@
 }
 
 .footerRow td {
-  padding: 12px;
+  padding: var(--space-4);
   color: var(--text-h);
   font-weight: 600;
   border-top: 2px solid var(--border);
@@ -45,4 +45,28 @@
    actually line up with their right-aligned values instead of staying left. */
 .table th.right {
   text-align: right;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: var(--text-h);
+}
+
+.headerLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sortIcon {
+  display: inline-flex;
+  opacity: 0.45;
+}
+
+.sortIconActive {
+  opacity: 1;
 }

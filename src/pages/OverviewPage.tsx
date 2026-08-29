@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { AllocationBar } from '../components/AllocationBar'
 import { AllocationLegend } from '../components/AllocationLegend'
-import { TrendDownIcon, TrendUpIcon, WalletIcon } from '../components/icons'
+import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { InvestedVsCurrentChart, type InvestedVsCurrentDatum } from '../components/InvestedVsCurrentChart'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
@@ -32,14 +32,14 @@ export function OverviewPage() {
     <>
       <div className={styles.topRow}>
         <KpiCard
-          icon={TrendUpIcon}
+          icon={TrendingUp}
           label="Current Value"
           value={formatInr(overview.totalCurrentInr)}
           badge={formatPct(overview.totalGainPct)}
         />
-        <KpiCard icon={WalletIcon} label="Total Invested" value={formatInr(overview.totalInvestedInr)} />
+        <KpiCard icon={Wallet} label="Total Invested" value={formatInr(overview.totalInvestedInr)} />
         <KpiCard
-          icon={overview.totalGainInr >= 0 ? TrendUpIcon : TrendDownIcon}
+          icon={overview.totalGainInr >= 0 ? TrendingUp : TrendingDown}
           label="Overall Gain / Loss"
           value={formatInr(overview.totalGainInr)}
           sublabel={formatPct(overview.totalGainPct)}
@@ -53,7 +53,7 @@ export function OverviewPage() {
           </div>
           <div className={styles.portfolioTotal}>{formatInr(overview.totalCurrentInr)}</div>
           <div className={primitives.mutedText}>{formatPct(overview.totalGainPct)} all-time</div>
-          <div style={{ marginTop: 20 }}>
+          <div style={{ marginTop: 'var(--space-6)' }}>
             <AllocationBar segments={allocationSegments} />
             <AllocationLegend entries={allocationSegments} />
           </div>

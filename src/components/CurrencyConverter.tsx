@@ -16,7 +16,7 @@ export function CurrencyConverter({ ratesMap }: { ratesMap: RatesMap }) {
 
   return (
     <div className={primitives.card}>
-      <div className={primitives.cardTitle} style={{ marginBottom: 20 }}>
+      <div className={primitives.cardTitle} style={{ marginBottom: 'var(--space-6)' }}>
         Currency Converter
       </div>
       <div className={styles.row}>

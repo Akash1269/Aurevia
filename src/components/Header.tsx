@@ -1,7 +1,7 @@
+import { Bell, RefreshCw, Search } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import { NAV_ITEMS } from '../routes'
-import { BellIcon, RefreshIcon, SearchIcon } from './icons'
 import styles from './Header.module.css'
 
 export function Header() {
@@ -14,7 +14,7 @@ export function Header() {
       <h1 className={styles.title}>{title}</h1>
       <div className={styles.actions}>
         <div className={styles.search}>
-          <SearchIcon width={16} height={16} />
+          <Search size={14} />
           <span>Search</span>
         </div>
         <button
@@ -24,10 +24,10 @@ export function Header() {
           title="Reload data from CSV files"
           aria-label="Refresh data"
         >
-          <RefreshIcon width={17} height={17} className={loading ? styles.spinning : undefined} />
+          <RefreshCw size={15} className={loading ? styles.spinning : undefined} />
         </button>
         <button type="button" className={styles.iconButton} title="Notifications" aria-label="Notifications" disabled>
-          <BellIcon width={17} height={17} />
+          <Bell size={15} />
         </button>
         <div className={styles.avatar} aria-hidden="true">
           IP

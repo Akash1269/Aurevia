@@ -20,7 +20,7 @@ export function ContributionTimelineChart({ data }: { data: ContributionTimeline
       <div className={primitives.cardHeader}>
         <div className={styles.title}>Contributions Over Time</div>
       </div>
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={240}>
         <ComposedChart data={data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
           <CartesianGrid stroke="var(--card-dark-border)" vertical={false} />
           <XAxis

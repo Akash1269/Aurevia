@@ -9,7 +9,7 @@ export interface DonutDatum {
 
 export function AllocationDonut({ data }: { data: DonutDatum[] }) {
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <ResponsiveContainer width="100%" height={190}>
       <PieChart>
         <Pie data={data} dataKey="value" nameKey="name" innerRadius={55} outerRadius={85} paddingAngle={2}>
           {data.map((d) => (

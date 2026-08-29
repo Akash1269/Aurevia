@@ -11,8 +11,8 @@
   --card-dark-muted: #9a9aa2;
   --card-dark-border: #232327;
 
-  --radius: 16px;
-  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-sm: 8px;
   --radius-pill: 999px;
 
   --alloc-1: #2563eb;
@@ -23,7 +23,31 @@
   --alloc-6: #94a3b8;
   --alloc-7: #1e293b;
 
-  font: 18px/145% system-ui, 'Segoe UI', Roboto, sans-serif;
+  --gain: #15803d;
+  --loss: #b91c1c;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+
+  /* Type scale */
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 19px;
+  --text-2xl: 22px;
+
+  font-size: var(--text-base);
+  line-height: 145%;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -45,6 +69,9 @@
     --alloc-5: #94a3b8;
     --alloc-6: #cbd5e1;
     --alloc-7: #64748b;
+
+    --gain: #4ade80;
+    --loss: #f87171;
   }
 }
 

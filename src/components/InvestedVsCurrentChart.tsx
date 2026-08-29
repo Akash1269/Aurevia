@@ -40,7 +40,7 @@ export function InvestedVsCurrentChart({ data }: { data: InvestedVsCurrentDatum[
           </button>
         </div>
       </div>
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={240}>
         {view === 'amount' ? (
           <BarChart data={data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
             <CartesianGrid stroke="var(--card-dark-border)" vertical={false} />

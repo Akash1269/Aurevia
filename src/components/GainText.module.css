@@ -1,0 +1,7 @@
+.positive {
+  color: var(--gain);
+}
+
+.negative {
+  color: var(--loss);
+}

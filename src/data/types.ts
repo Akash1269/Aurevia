@@ -23,6 +23,7 @@ export interface UsStockRow {
 export interface IndiaStockRow {
   symbol: string
   name: string
+  sector: string
   quantity: number
   avg_buy_price_inr: number
   current_price_inr: number
@@ -80,7 +81,8 @@ export interface PfContributionRow extends PfContributionRawRow {
 export interface PfAccountSummaryRawRow {
   member_id: string
   company: string
-  years: number
+  from_year: number
+  to_year: number
   current_balance: number
   adjustments: number
   employee: number

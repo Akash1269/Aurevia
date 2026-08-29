@@ -1,7 +1,7 @@
 .topRow {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(280px, 380px);
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(240px, 320px);
+  gap: var(--space-4);
   align-items: stretch;
   min-width: 0;
 }
@@ -15,22 +15,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-1);
 }
 
 .portfolioTotal {
-  font-size: 34px;
+  font-size: var(--text-2xl);
   font-weight: 600;
   color: var(--text-h);
-  letter-spacing: -0.5px;
-  margin: 6px 0 2px;
+  letter-spacing: -0.3px;
+  margin: var(--space-2) 0 var(--space-1);
 }
 
 .bottomRow {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--space-4);
   align-items: start;
   min-width: 0;
 }
@@ -38,7 +39,7 @@
 .listCard {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-4);
   min-width: 0;
 }
 
@@ -46,15 +47,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  font-size: 14px;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
   min-width: 0;
 }
 
 .rankLeft {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
   color: var(--text-h);
   min-width: 0;
   overflow: hidden;
@@ -63,8 +64,8 @@
 }
 
 .rankDot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -72,36 +73,36 @@
 .rankRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-3);
   flex-shrink: 0;
 }
 
 .holdingsScroll {
   display: flex;
-  gap: 12px;
+  gap: var(--space-4);
   overflow-x: auto;
-  padding-bottom: 4px;
-  margin: 0 -4px;
+  padding-bottom: var(--space-1);
+  margin: 0 calc(var(--space-1) * -1);
 }
 
 .holdingCard {
-  flex: 0 0 150px;
+  flex: 0 0 130px;
   background: var(--card-dark-bg);
   color: var(--card-dark-text);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .holdingName {
-  font-size: 12px;
+  font-size: var(--text-2xs);
   color: var(--card-dark-muted);
 }
 
 .holdingValue {
-  font-size: 17px;
+  font-size: var(--text-lg);
   font-weight: 600;
 }
 
@@ -120,8 +121,8 @@
 .exposureRow {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 14px;
+  gap: var(--space-4);
+  font-size: var(--text-sm);
   color: var(--text-h);
   min-width: 0;
 }
@@ -129,7 +130,7 @@
 .exposureLeft {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
   white-space: nowrap;
 }
 
@@ -137,11 +138,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--bg);
-  font-size: 11px;
+  font-size: var(--text-2xs);
   font-weight: 600;
   flex-shrink: 0;
 }

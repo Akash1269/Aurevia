@@ -1,30 +1,30 @@
-import type { ComponentType, SVGProps } from 'react'
 import {
-  BankIcon,
-  BriefcaseIcon,
-  CandlestickIcon,
-  GridIcon,
-  LayersIcon,
-  LockIcon,
-  ShieldIcon,
-  SwapIcon,
-  TrendUpIcon,
-} from './components/icons'
+  ArrowRightLeft,
+  Briefcase,
+  CandlestickChart,
+  Landmark,
+  Layers,
+  LayoutGrid,
+  Lock,
+  Shield,
+  TrendingUp,
+  type LucideIcon,
+} from 'lucide-react'
 
 export interface NavItem {
   to: string
   label: string
-  Icon: ComponentType<SVGProps<SVGSVGElement>>
+  Icon: LucideIcon
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { to: '/', label: 'Overview', Icon: GridIcon },
-  { to: '/us-stocks', label: 'US Stocks', Icon: TrendUpIcon },
-  { to: '/india-stocks', label: 'India Stocks', Icon: CandlestickIcon },
-  { to: '/mutual-funds', label: 'Mutual Funds', Icon: LayersIcon },
-  { to: '/esops', label: 'ESOPs', Icon: BriefcaseIcon },
-  { to: '/savings', label: 'Savings Accounts', Icon: BankIcon },
-  { to: '/fixed-deposits', label: 'Fixed Deposits', Icon: LockIcon },
-  { to: '/pf', label: 'India PF', Icon: ShieldIcon },
-  { to: '/currency-converter', label: 'Currency Converter', Icon: SwapIcon },
+  { to: '/', label: 'Overview', Icon: LayoutGrid },
+  { to: '/us-stocks', label: 'US Stocks', Icon: TrendingUp },
+  { to: '/india-stocks', label: 'India Stocks', Icon: CandlestickChart },
+  { to: '/mutual-funds', label: 'Mutual Funds', Icon: Layers },
+  { to: '/esops', label: 'ESOPs', Icon: Briefcase },
+  { to: '/savings', label: 'Savings Accounts', Icon: Landmark },
+  { to: '/fixed-deposits', label: 'Fixed Deposits', Icon: Lock },
+  { to: '/pf', label: 'India PF', Icon: Shield },
+  { to: '/currency-converter', label: 'Currency Converter', Icon: ArrowRightLeft },
 ]
