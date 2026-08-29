@@ -8,6 +8,12 @@ export interface HoldingsColumn<T> {
   align?: 'left' | 'right'
   render: (row: T) => ReactNode
   sortValue?: (row: T) => string | number
+  /** Max-width (e.g. '160px') at which this column's text truncates with an ellipsis; full value shows on hover via `title`. */
+  truncate?: string
+  /** Full-text value shown in the truncated cell's hover tooltip. Required when `truncate` is set. */
+  title?: (row: T) => string
+  /** Hides this column below the 700px breakpoint to keep the table usable on small screens. */
+  hideOnMobile?: boolean
 }
 
 interface SortState {
@@ -59,7 +65,7 @@ export function HoldingsTable<T extends { displayName: string }>({
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={cx(col.align === 'right' && styles.right, col.sortValue && styles.sortable)}
+                className={cx(col.align === 'right' && styles.right, col.sortValue && styles.sortable, col.hideOnMobile && styles.hideOnMobile)}
                 onClick={() => handleSort(col)}
               >
                 <span className={styles.headerLabel}>
@@ -86,8 +92,14 @@ export function HoldingsTable<T extends { displayName: string }>({
           {sortedRows.map((row, index) => (
             <tr key={`${row.displayName}-${index}`}>
               {columns.map((col) => (
-                <td key={col.key} className={col.align === 'right' ? styles.right : undefined}>
-                  {col.render(row)}
+                <td key={col.key} className={cx(col.align === 'right' && styles.right, col.hideOnMobile && styles.hideOnMobile)}>
+                  {col.truncate ? (
+                    <span className={styles.truncate} style={{ maxWidth: col.truncate }} title={col.title?.(row)}>
+                      {col.render(row)}
+                    </span>
+                  ) : (
+                    col.render(row)
+                  )}
                 </td>
               ))}
             </tr>
@@ -97,7 +109,7 @@ export function HoldingsTable<T extends { displayName: string }>({
           <tfoot>
             <tr className={styles.footerRow}>
               {columns.map((col) => (
-                <td key={col.key} className={col.align === 'right' ? styles.right : undefined}>
+                <td key={col.key} className={cx(col.align === 'right' && styles.right, col.hideOnMobile && styles.hideOnMobile)}>
                   {footer[col.key] ?? ''}
                 </td>
               ))}

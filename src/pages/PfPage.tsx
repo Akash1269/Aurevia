@@ -1,20 +1,36 @@
+import { useState } from 'react'
 import { Card } from '../components/Card'
 import { ContributionTimelineChart, type ContributionTimelinePoint } from '../components/ContributionTimelineChart'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Building2, Calendar, History, ListChecks, Shield, Wallet } from 'lucide-react'
+import { Building2, Calendar, ChevronDown, ChevronUp, History, ListChecks, Shield, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedPf, PfContributionRow } from '../data/types'
+import primitives from '../styles/primitives.module.css'
 import { formatInr, formatMonth, formatSignedInr, monthSortKey } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
 const accountSummaryColumns: HoldingsColumn<ComputedPf>[] = [
-  { key: 'member_id', label: 'Member ID', render: (r) => r.member_id, sortValue: (r) => r.member_id },
-  { key: 'company', label: 'Company', render: (r) => r.company, sortValue: (r) => r.company },
-  { key: 'years', label: 'Years', render: (r) => `${r.from_year}–${r.to_year}`, sortValue: (r) => r.from_year },
+  {
+    key: 'member_id',
+    label: 'Member ID',
+    render: (r) => r.member_id,
+    sortValue: (r) => r.member_id,
+    truncate: '120px',
+    title: (r) => r.member_id,
+  },
+  {
+    key: 'company',
+    label: 'Company',
+    render: (r) => r.company,
+    sortValue: (r) => r.company,
+    truncate: '110px',
+    title: (r) => r.company,
+  },
+  { key: 'years', label: 'Years', render: (r) => `${r.from_year}–${r.to_year}`, sortValue: (r) => r.from_year, hideOnMobile: true },
   {
     key: 'current_balance',
     label: 'Current Balance',
@@ -28,6 +44,7 @@ const accountSummaryColumns: HoldingsColumn<ComputedPf>[] = [
     align: 'right',
     render: (r) => <GainText value={r.adjustments}>{formatSignedInr(r.adjustments)}</GainText>,
     sortValue: (r) => r.adjustments,
+    hideOnMobile: true,
   },
   { key: 'employee', label: 'Employee', align: 'right', render: (r) => formatInr(r.employee), sortValue: (r) => r.employee },
   { key: 'employer', label: 'Employer', align: 'right', render: (r) => formatInr(r.employer), sortValue: (r) => r.employer },
@@ -44,6 +61,7 @@ const accountSummaryColumns: HoldingsColumn<ComputedPf>[] = [
     align: 'right',
     render: (r) => formatInr(r.transfer_in),
     sortValue: (r) => r.transfer_in,
+    hideOnMobile: true,
   },
   {
     key: 'withdrawal',
@@ -51,11 +69,19 @@ const accountSummaryColumns: HoldingsColumn<ComputedPf>[] = [
     align: 'right',
     render: (r) => formatInr(r.withdrawal),
     sortValue: (r) => r.withdrawal,
+    hideOnMobile: true,
   },
 ]
 
 const contributionColumns: HoldingsColumn<PfContributionRow>[] = [
-  { key: 'company', label: 'Company', render: (r) => r.company, sortValue: (r) => r.company },
+  {
+    key: 'company',
+    label: 'Company',
+    render: (r) => r.company,
+    sortValue: (r) => r.company,
+    truncate: '110px',
+    title: (r) => r.company,
+  },
   { key: 'month', label: 'Month', render: (r) => formatMonth(r.month), sortValue: (r) => monthSortKey(r.month) },
   { key: 'employee', label: 'Employee', align: 'right', render: (r) => formatInr(r.employee), sortValue: (r) => r.employee },
   { key: 'employer', label: 'Employer', align: 'right', render: (r) => formatInr(r.employer), sortValue: (r) => r.employer },
@@ -82,6 +108,7 @@ function buildContributionTimeline(rows: PfContributionRow[]): ContributionTimel
 export function PfPage() {
   const { results, pfContributions } = usePortfolioData()
   const { rows, totals, error } = results.pf
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   if (error) return <ErrorState message={error} />
 
@@ -121,25 +148,44 @@ export function PfPage() {
         {rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={accountSummaryColumns} rows={rows} />}
       </Card>
       {timeline.length > 0 && <ContributionTimelineChart data={timeline} />}
-      <Card icon={History} title="Monthly Contribution History">
-        {pfContributions.error ? (
-          <ErrorState message={pfContributions.error} />
-        ) : contributionRows.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <HoldingsTable
-            columns={contributionColumns}
-            rows={contributionRows}
-            footer={{
-              company: 'Total',
-              employee: formatInr(contributionTotals.employee),
-              employer: formatInr(contributionTotals.employer),
-              pension: formatInr(contributionTotals.pension),
-              total: formatInr(contributionTotals.total),
-            }}
-          />
-        )}
-      </Card>
+      {pfContributions.error ? (
+        <ErrorState message={pfContributions.error} />
+      ) : contributionRows.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <>
+          <button
+            type="button"
+            className={styles.sectionToggle}
+            onClick={() => setHistoryOpen((open) => !open)}
+            aria-expanded={historyOpen}
+          >
+            <span className={primitives.cardTitle}>
+              <History width={16} height={16} />
+              <span>Monthly Contribution History</span>
+            </span>
+            <span className={styles.sectionToggleRight}>
+              <span className={primitives.mutedText}>{contributionRows.length} months</span>
+              {historyOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </span>
+          </button>
+          {historyOpen && (
+            <Card>
+              <HoldingsTable
+                columns={contributionColumns}
+                rows={contributionRows}
+                footer={{
+                  company: 'Total',
+                  employee: formatInr(contributionTotals.employee),
+                  employer: formatInr(contributionTotals.employer),
+                  pension: formatInr(contributionTotals.pension),
+                  total: formatInr(contributionTotals.total),
+                }}
+              />
+            </Card>
+          )}
+        </>
+      )}
     </>
   )
 }

@@ -13,7 +13,7 @@ export function RankedList({ items }: { items: RankedItem[] }) {
       {items.map((item) => (
         <li key={item.key} className={styles.row}>
           <span className={styles.label}>{item.label}</span>
-          <span>{item.value}</span>
+          <span className={styles.value}>{item.value}</span>
         </li>
       ))}
     </ul>

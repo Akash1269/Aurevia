@@ -13,7 +13,7 @@
 }
 
 .main {
-  padding: var(--space-3) var(--space-6) var(--space-7);
+  padding: var(--space-3) var(--space-4);
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -27,6 +27,6 @@
     grid-template-columns: 56px 1fr;
   }
   .main {
-    padding: var(--space-2) var(--space-4) var(--space-6);
+    padding: var(--space-2) var(--space-4);
   }
 }

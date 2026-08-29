@@ -5,53 +5,64 @@ import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Briefcase, PieChart, TrendingUp, Unlock, Wallet } from 'lucide-react'
+import { ListChecks, PieChart, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedEsop } from '../data/types'
-import { formatDate, formatInr, formatPct } from '../utils/format'
+import { formatInr, formatPct } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedEsop>[] = [
-  { key: 'company', label: 'Company', render: (r) => r.company, sortValue: (r) => r.company },
   {
-    key: 'grant_date',
-    label: 'Grant Date',
-    render: (r) => formatDate(r.grant_date),
-    sortValue: (r) => new Date(r.grant_date).getTime(),
+    key: 'company',
+    label: 'Company',
+    render: (r) => r.company,
+    sortValue: (r) => r.company,
+    truncate: '140px',
+    title: (r) => r.company,
   },
-  { key: 'total_options', label: 'Total', align: 'right', render: (r) => r.total_options, sortValue: (r) => r.total_options },
+  { key: 'quantity', label: 'Quantity', align: 'right', render: (r) => r.quantity, sortValue: (r) => r.quantity },
   {
-    key: 'vested_options',
-    label: 'Vested',
+    key: 'avg_purchase_price',
+    label: 'Avg Purchase Price',
     align: 'right',
-    render: (r) => r.vested_options,
-    sortValue: (r) => r.vested_options,
-  },
-  {
-    key: 'unvested',
-    label: 'Unvested',
-    align: 'right',
-    render: (r) => r.unvestedOptions,
-    sortValue: (r) => r.unvestedOptions,
+    render: (r) => r.avg_purchase_price.toLocaleString('en-IN'),
+    sortValue: (r) => r.avg_purchase_price,
+    hideOnMobile: true,
   },
   {
-    key: 'exercise_price',
-    label: 'Exercise Price',
+    key: 'current_price',
+    label: 'Current Price',
     align: 'right',
-    render: (r) => `${r.exercise_price} ${r.currency}`,
-    sortValue: (r) => r.exercise_price,
+    render: (r) => r.current_price.toLocaleString('en-IN'),
+    sortValue: (r) => r.current_price,
+    hideOnMobile: true,
+  },
+  { key: 'currency', label: 'Currency', render: (r) => r.currency, sortValue: (r) => r.currency, hideOnMobile: true },
+  {
+    key: 'invested',
+    label: 'Invested',
+    align: 'right',
+    render: (r) => r.invested.toLocaleString('en-IN'),
+    sortValue: (r) => r.invested,
   },
   {
-    key: 'current_fmv',
-    label: 'Current FMV',
+    key: 'value',
+    label: 'Value',
     align: 'right',
-    render: (r) => `${r.current_fmv} ${r.currency}`,
-    sortValue: (r) => r.current_fmv,
+    render: (r) => r.current.toLocaleString('en-IN'),
+    sortValue: (r) => r.current,
+  },
+  {
+    key: 'value_inr',
+    label: 'Value (INR)',
+    align: 'right',
+    render: (r) => formatInr(r.currentInr),
+    sortValue: (r) => r.currentInr,
   },
   {
     key: 'gain',
-    label: 'Vested Gain %',
+    label: 'Gain %',
     align: 'right',
     render: (r) => <GainText value={r.gainPct}>{formatPct(r.gainPct)}</GainText>,
     sortValue: (r) => r.gainPct,
@@ -64,34 +75,28 @@ export function EsopsPage() {
 
   if (error) return <ErrorState message={error} />
 
-  const totalUnvested = rows.reduce((sum, r) => sum + r.unvestedOptions, 0)
-  const totalVested = rows.reduce((sum, r) => sum + r.vested_options, 0)
+  const gainPctInr = totals.investedInr === 0 ? 0 : (totals.gainInr / totals.investedInr) * 100
   const donutData: DonutDatum[] = rows.map((r, i) => ({ name: r.company, value: r.currentInr, color: colorForIndex(i) }))
 
   return (
     <>
       <div className={styles.kpiRow}>
+        <KpiCard icon={Wallet} label="Invested" value={formatInr(totals.investedInr)} />
+        <KpiCard icon={TrendingUp} label="Current Value" value={formatInr(totals.currentInr)} />
         <KpiCard
-          icon={TrendingUp}
-          label="Vested Value (Intrinsic)"
+          icon={totals.gainInr >= 0 ? TrendingUp : TrendingDown}
+          label="Gain / Loss"
           value={formatInr(totals.gainInr)}
-          sublabel="(current FMV − exercise price) × vested options"
+          badge={formatPct(gainPctInr)}
         />
-        <KpiCard
-          icon={Briefcase}
-          label="Unvested Options"
-          value={totalUnvested.toLocaleString('en-IN')}
-          sublabel="not yet exercisable"
-        />
-        <KpiCard icon={Wallet} label="Gain % on Vested" value={formatPct(totals.gainPct)} />
-        <KpiCard icon={Unlock} label="Vested Options" value={totalVested.toLocaleString('en-IN')} sublabel="exercisable now" />
+        <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
       </div>
-      <div className={styles.body}>
-        <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <div className={styles.chartRow}>
         <Card icon={PieChart} title="By Company" align="center">
           {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
         </Card>
       </div>
+      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>
   )
 }

@@ -1,7 +1,6 @@
 .card {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .label {
@@ -22,6 +21,5 @@
 }
 
 .sublabel {
-  margin-top: auto;
-  padding-top: var(--space-3);
+  margin-top: var(--space-3);
 }

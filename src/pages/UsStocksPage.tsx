@@ -14,7 +14,14 @@ import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedUsStock>[] = [
   { key: 'symbol', label: 'Symbol', render: (r) => r.symbol, sortValue: (r) => r.symbol },
-  { key: 'name', label: 'Name', render: (r) => r.name, sortValue: (r) => r.name },
+  {
+    key: 'name',
+    label: 'Name',
+    render: (r) => r.name,
+    sortValue: (r) => r.name,
+    truncate: '180px',
+    title: (r) => r.name,
+  },
   { key: 'quantity', label: 'Qty', align: 'right', render: (r) => r.quantity, sortValue: (r) => r.quantity },
   {
     key: 'avg',
@@ -22,6 +29,7 @@ const columns: HoldingsColumn<ComputedUsStock>[] = [
     align: 'right',
     render: (r) => formatUsd(r.avg_buy_price_usd),
     sortValue: (r) => r.avg_buy_price_usd,
+    hideOnMobile: true,
   },
   {
     key: 'current',
@@ -29,6 +37,7 @@ const columns: HoldingsColumn<ComputedUsStock>[] = [
     align: 'right',
     render: (r) => formatUsd(r.current_price_usd),
     sortValue: (r) => r.current_price_usd,
+    hideOnMobile: true,
   },
   { key: 'invested', label: 'Invested', align: 'right', render: (r) => formatUsd(r.invested), sortValue: (r) => r.invested },
   { key: 'value', label: 'Value', align: 'right', render: (r) => formatUsd(r.current), sortValue: (r) => r.current },
@@ -74,12 +83,12 @@ export function UsStocksPage() {
         />
         <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
       </div>
-      <div className={styles.body}>
-        <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <div className={styles.chartRow}>
         <Card icon={PieChart} title="By Symbol" align="center">
           {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
         </Card>
       </div>
+      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>
   )
 }

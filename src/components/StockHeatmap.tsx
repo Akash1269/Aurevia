@@ -20,19 +20,21 @@ interface CellContentProps {
   width?: number
   height?: number
   name?: string
+  size?: number
   gainPct?: number
   index?: number
 }
 
-function CellContent({ x = 0, y = 0, width = 0, height = 0, name = '', gainPct = 0, index = 0 }: CellContentProps) {
-  const showFull = width > 55 && height > 32
-  const showCodeOnly = !showFull && width > 22 && height > 14
+function CellContent({ x = 0, y = 0, width = 0, height = 0, name = '', size = 0, gainPct = 0, index = 0 }: CellContentProps) {
+  const showValue = width > 70 && height > 46
+  const showGain = showValue || (width > 55 && height > 32)
+  const showCodeOnly = !showGain && width > 22 && height > 14
   const clipId = `heatmap-cell-${index}`
 
   return (
     <g>
       <rect x={x} y={y} width={width} height={height} fill={heatColor(gainPct)} stroke="var(--card-bg)" strokeWidth={2} />
-      {(showFull || showCodeOnly) && (
+      {(showGain || showCodeOnly) && (
         <>
           <clipPath id={clipId}>
             <rect x={x + 2} y={y + 2} width={Math.max(0, width - 4)} height={Math.max(0, height - 4)} />
@@ -41,8 +43,13 @@ function CellContent({ x = 0, y = 0, width = 0, height = 0, name = '', gainPct =
             <text x={x + 5} y={y + 15} fontSize={11} fontWeight={600} fill="#ffffff">
               {name}
             </text>
-            {showFull && (
+            {showValue && (
               <text x={x + 5} y={y + 29} fontSize={10} fill="rgba(255,255,255,0.85)">
+                {formatInr(size)}
+              </text>
+            )}
+            {showGain && (
+              <text x={x + 5} y={showValue ? y + 43 : y + 29} fontSize={10} fill="rgba(255,255,255,0.85)">
                 {gainPct > 0 ? '+' : ''}
                 {gainPct.toFixed(1)}%
               </text>

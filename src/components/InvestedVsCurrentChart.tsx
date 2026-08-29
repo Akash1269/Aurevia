@@ -40,29 +40,27 @@ export function InvestedVsCurrentChart({ data }: { data: InvestedVsCurrentDatum[
           </button>
         </div>
       </div>
-      <div className={styles.chartBody}>
-        <ResponsiveContainer width="100%" height="100%">
-          {view === 'amount' ? (
-            <BarChart data={data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
-              <CartesianGrid stroke="var(--card-dark-border)" vertical={false} />
-              <XAxis dataKey="label" stroke="var(--card-dark-muted)" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis hide />
-              <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#fff' }} formatter={(value: number) => formatInr(value)} />
-              <Legend wrapperStyle={legendStyle} />
-              <Bar dataKey="invested" name="Invested" fill="#4b4b52" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="current" name="Current" fill="#ffffff" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          ) : (
-            <BarChart data={data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
-              <CartesianGrid stroke="var(--card-dark-border)" vertical={false} />
-              <XAxis dataKey="label" stroke="var(--card-dark-muted)" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis hide />
-              <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#fff' }} formatter={(value: number) => formatPct(value)} />
-              <Bar dataKey="gainPct" name="Gain %" fill="#ffffff" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          )}
-        </ResponsiveContainer>
-      </div>
+      <ResponsiveContainer width="100%" height={190}>
+        {view === 'amount' ? (
+          <BarChart data={data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
+            <CartesianGrid stroke="var(--card-dark-border)" vertical={false} />
+            <XAxis dataKey="label" stroke="var(--card-dark-muted)" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis hide />
+            <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#fff' }} formatter={(value: number) => formatInr(value)} />
+            <Legend wrapperStyle={legendStyle} />
+            <Bar dataKey="invested" name="Invested" fill="#4b4b52" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="current" name="Current" fill="#ffffff" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        ) : (
+          <BarChart data={data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
+            <CartesianGrid stroke="var(--card-dark-border)" vertical={false} />
+            <XAxis dataKey="label" stroke="var(--card-dark-muted)" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis hide />
+            <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#fff' }} formatter={(value: number) => formatPct(value)} />
+            <Bar dataKey="gainPct" name="Gain %" fill="#ffffff" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        )}
+      </ResponsiveContainer>
     </div>
   )
 }

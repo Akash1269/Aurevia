@@ -13,7 +13,14 @@ import { formatDate, formatInr } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedFixedDeposit>[] = [
-  { key: 'bank_name', label: 'Bank', render: (r) => r.bank_name, sortValue: (r) => r.bank_name },
+  {
+    key: 'bank_name',
+    label: 'Bank',
+    render: (r) => r.bank_name,
+    sortValue: (r) => r.bank_name,
+    truncate: '140px',
+    title: (r) => r.bank_name,
+  },
   {
     key: 'principal',
     label: 'Principal',
@@ -28,12 +35,19 @@ const columns: HoldingsColumn<ComputedFixedDeposit>[] = [
     render: (r) => `${r.interest_rate_pct}%`,
     sortValue: (r) => r.interest_rate_pct,
   },
-  { key: 'start', label: 'Start', render: (r) => formatDate(r.start_date), sortValue: (r) => new Date(r.start_date).getTime() },
+  {
+    key: 'start',
+    label: 'Start',
+    render: (r) => formatDate(r.start_date),
+    sortValue: (r) => new Date(r.start_date).getTime(),
+    hideOnMobile: true,
+  },
   {
     key: 'maturity',
     label: 'Maturity',
     render: (r) => formatDate(r.maturity_date),
     sortValue: (r) => new Date(r.maturity_date).getTime(),
+    hideOnMobile: true,
   },
   {
     key: 'accrued',
@@ -76,12 +90,12 @@ export function FixedDepositsPage() {
         <KpiCard icon={Lock} label="Total Maturity Value" value={formatInr(totalMaturityInr)} sublabel="at full term" />
         <KpiCard icon={Coins} label="Interest at Maturity" value={formatInr(totalInterestAtMaturity)} />
       </div>
-      <div className={styles.body}>
-        <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <div className={styles.chartRow}>
         <Card icon={PieChart} title="By Bank" align="center">
           {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
         </Card>
       </div>
+      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>
   )
 }

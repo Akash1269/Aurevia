@@ -39,11 +39,9 @@ export interface MutualFundRow {
 
 export interface EsopRow {
   company: string
-  grant_date: string
-  total_options: number
-  vested_options: number
-  exercise_price: number
-  current_fmv: number
+  quantity: number
+  avg_purchase_price: number
+  current_price: number
   currency: CurrencyCode
 }
 
@@ -111,7 +109,7 @@ export interface WithComputed {
 export type ComputedUsStock = UsStockRow & WithComputed
 export type ComputedIndiaStock = IndiaStockRow & WithComputed
 export type ComputedMutualFund = MutualFundRow & WithComputed
-export type ComputedEsop = EsopRow & WithComputed & { unvestedOptions: number }
+export type ComputedEsop = EsopRow & WithComputed
 export type ComputedSavings = SavingsRow & WithComputed
 export type ComputedFixedDeposit = FixedDepositRow & WithComputed & { accrualPct: number }
 export type ComputedPf = PfAccountSummaryRawRow & WithComputed

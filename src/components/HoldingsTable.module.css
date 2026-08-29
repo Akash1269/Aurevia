@@ -70,3 +70,18 @@
 .sortIconActive {
   opacity: 1;
 }
+
+.truncate {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+@media (max-width: 700px) {
+  .hideOnMobile {
+    display: none;
+  }
+}

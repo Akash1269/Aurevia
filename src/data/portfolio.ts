@@ -149,15 +149,14 @@ export function computeMutualFunds(rows: MutualFundRow[]): CategoryResult<Comput
 
 export function computeEsops(rows: EsopRow[], ratesMap: RatesMap): CategoryResult<ComputedEsop> {
   const computed = rows.map((row) => {
-    const invested = row.vested_options * row.exercise_price
-    const current = row.vested_options * row.current_fmv
+    const invested = row.quantity * row.avg_purchase_price
+    const current = row.quantity * row.current_price
     const gain = current - invested
     const investedInr = toInr(invested, row.currency, ratesMap)
     const currentInr = toInr(current, row.currency, ratesMap)
     return {
       ...row,
       displayName: row.company,
-      unvestedOptions: row.total_options - row.vested_options,
       invested,
       current,
       gain,

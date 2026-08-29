@@ -5,19 +5,36 @@ import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
+import { InfoTooltip } from '../components/InfoTooltip'
 import { RankedList } from '../components/RankedList'
 import { StockHeatmap, type HeatmapDatum } from '../components/StockHeatmap'
 import { LayoutGrid, ListChecks, PieChart, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedIndiaStock } from '../data/types'
+import primitives from '../styles/primitives.module.css'
 import { formatInr, formatPct, formatSignedInr } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedIndiaStock>[] = [
   { key: 'symbol', label: 'Symbol', render: (r) => r.symbol, sortValue: (r) => r.symbol },
-  { key: 'name', label: 'Name', render: (r) => r.name, sortValue: (r) => r.name },
-  { key: 'sector', label: 'Sector', render: (r) => r.sector, sortValue: (r) => r.sector },
+  {
+    key: 'name',
+    label: 'Name',
+    render: (r) => r.name,
+    sortValue: (r) => r.name,
+    truncate: '170px',
+    title: (r) => r.name,
+  },
+  {
+    key: 'sector',
+    label: 'Sector',
+    render: (r) => r.sector,
+    sortValue: (r) => r.sector,
+    truncate: '110px',
+    title: (r) => r.sector,
+    hideOnMobile: true,
+  },
   { key: 'quantity', label: 'Qty', align: 'right', render: (r) => r.quantity, sortValue: (r) => r.quantity },
   {
     key: 'avg',
@@ -25,6 +42,7 @@ const columns: HoldingsColumn<ComputedIndiaStock>[] = [
     align: 'right',
     render: (r) => formatInr(r.avg_buy_price_inr),
     sortValue: (r) => r.avg_buy_price_inr,
+    hideOnMobile: true,
   },
   {
     key: 'current',
@@ -32,6 +50,7 @@ const columns: HoldingsColumn<ComputedIndiaStock>[] = [
     align: 'right',
     render: (r) => formatInr(r.current_price_inr),
     sortValue: (r) => r.current_price_inr,
+    hideOnMobile: true,
   },
   { key: 'invested', label: 'Invested', align: 'right', render: (r) => formatInr(r.invested), sortValue: (r) => r.invested },
   { key: 'value', label: 'Value', align: 'right', render: (r) => formatInr(r.current), sortValue: (r) => r.current },
@@ -82,7 +101,7 @@ export function IndiaStocksPage() {
 
       <div className={styles.insightsRow}>
         <Card icon={PieChart} title="By Sector" align="center">
-          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={sectorDonutData} />}
+          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={sectorDonutData} showLegend />}
         </Card>
         <Card icon={TrendingUp} title="Top 5 Gainers" align="center">
           {topGainers.length === 0 ? (
@@ -92,7 +111,11 @@ export function IndiaStocksPage() {
               items={topGainers.map((r) => ({
                 key: r.symbol,
                 label: r.symbol,
-                value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
+                value: (
+                  <GainText value={r.gain}>
+                    {formatSignedInr(r.gain)} ({formatPct(r.gainPct)})
+                  </GainText>
+                ),
               }))}
             />
           )}
@@ -105,15 +128,33 @@ export function IndiaStocksPage() {
               items={topLosers.map((r) => ({
                 key: r.symbol,
                 label: r.symbol,
-                value: <GainText value={r.gain}>{formatSignedInr(r.gain)}</GainText>,
+                value: (
+                  <GainText value={r.gain}>
+                    {formatSignedInr(r.gain)} ({formatPct(r.gainPct)})
+                  </GainText>
+                ),
               }))}
             />
           )}
         </Card>
       </div>
 
-      <Card icon={LayoutGrid} title="By Stock (size = value, color = gain/loss)">
-        {rows.length === 0 ? <EmptyState /> : <StockHeatmap data={heatmapData} />}
+      <Card icon={LayoutGrid} title="By Stock">
+        {rows.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <>
+            <StockHeatmap data={heatmapData} />
+            <div className={styles.chartLegend}>
+              <InfoTooltip>
+                Dark green ≥ 30% gain · Green 0–30% gain
+                <br />
+                Light red 0–15% loss · Dark red &gt; 15% loss
+              </InfoTooltip>
+              <span className={primitives.mutedText}>Size = current value · Color = gain/loss</span>
+            </div>
+          </>
+        )}
       </Card>
 
       <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>

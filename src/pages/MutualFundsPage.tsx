@@ -11,16 +11,39 @@ import { formatInr, formatPct } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedMutualFund>[] = [
-  { key: 'fund_name', label: 'Fund', render: (r) => r.fund_name, sortValue: (r) => r.fund_name },
-  { key: 'category', label: 'Category', render: (r) => r.category, sortValue: (r) => r.category },
+  {
+    key: 'fund_name',
+    label: 'Fund',
+    render: (r) => r.fund_name,
+    sortValue: (r) => r.fund_name,
+    truncate: '220px',
+    title: (r) => r.fund_name,
+  },
+  {
+    key: 'category',
+    label: 'Category',
+    render: (r) => r.category,
+    sortValue: (r) => r.category,
+    truncate: '150px',
+    title: (r) => r.category,
+    hideOnMobile: true,
+  },
   { key: 'units', label: 'Units', align: 'right', render: (r) => r.units.toFixed(2), sortValue: (r) => r.units },
-  { key: 'avg_nav', label: 'Avg NAV', align: 'right', render: (r) => formatInr(r.avg_nav), sortValue: (r) => r.avg_nav },
+  {
+    key: 'avg_nav',
+    label: 'Avg NAV',
+    align: 'right',
+    render: (r) => formatInr(r.avg_nav),
+    sortValue: (r) => r.avg_nav,
+    hideOnMobile: true,
+  },
   {
     key: 'current_nav',
     label: 'Current NAV',
     align: 'right',
     render: (r) => formatInr(r.current_nav),
     sortValue: (r) => r.current_nav,
+    hideOnMobile: true,
   },
   { key: 'invested', label: 'Invested', align: 'right', render: (r) => formatInr(r.invested), sortValue: (r) => r.invested },
   { key: 'value', label: 'Value', align: 'right', render: (r) => formatInr(r.current), sortValue: (r) => r.current },

@@ -12,7 +12,14 @@ import { formatInr } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedSavings>[] = [
-  { key: 'bank_name', label: 'Bank', render: (r) => r.bank_name, sortValue: (r) => r.bank_name },
+  {
+    key: 'bank_name',
+    label: 'Bank',
+    render: (r) => r.bank_name,
+    sortValue: (r) => r.bank_name,
+    truncate: '140px',
+    title: (r) => r.bank_name,
+  },
   { key: 'account_type', label: 'Type', render: (r) => r.account_type, sortValue: (r) => r.account_type },
   {
     key: 'balance',
@@ -20,6 +27,7 @@ const columns: HoldingsColumn<ComputedSavings>[] = [
     align: 'right',
     render: (r) => `${r.balance.toLocaleString('en-IN')} ${r.currency}`,
     sortValue: (r) => r.balance,
+    hideOnMobile: true,
   },
   {
     key: 'balance_inr',
@@ -59,12 +67,12 @@ export function SavingsPage() {
         <KpiCard icon={Landmark} label="Accounts" value={String(rows.length)} />
         <KpiCard icon={PiggyBank} label="Est. Annual Interest" value={formatInr(estimatedAnnualInterest)} />
       </div>
-      <div className={styles.body}>
-        <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <div className={styles.chartRow}>
         <Card icon={PieChart} title="By Bank" align="center">
           {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
         </Card>
       </div>
+      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>
   )
 }
