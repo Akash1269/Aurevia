@@ -58,6 +58,7 @@ export function OverviewPage() {
           label="Current Value"
           value={formatInr(overview.totalCurrentInr)}
           badge={formatPct(overview.totalGainPct)}
+          badgeTone={overview.totalGainPct}
           sublabel={`${totalHoldings} holdings across ${overview.categories.length} categories`}
         />
         <KpiCard
@@ -72,7 +73,13 @@ export function OverviewPage() {
           value={formatInr(overview.totalGainInr)}
           sublabel={formatPct(overview.totalGainPct)}
         />
-        <KpiCard icon={Trophy} label="Best Performer" value={bestPerformer.label} badge={formatPct(bestPerformer.gainPct)} />
+        <KpiCard
+          icon={Trophy}
+          label="Best Performer"
+          value={bestPerformer.label}
+          badge={formatPct(bestPerformer.gainPct)}
+          badgeTone={bestPerformer.gainPct}
+        />
       </div>
 
       <div className={styles.portfolioRow}>

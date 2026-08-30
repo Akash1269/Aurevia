@@ -1,12 +1,14 @@
-import { Bell, RefreshCw, Search } from 'lucide-react'
+import { Bell, Moon, RefreshCw, Search, Sun } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { usePortfolioData } from '../context/PortfolioDataContext'
+import { useTheme } from '../hooks/useTheme'
 import { NAV_ITEMS } from '../routes'
 import styles from './Header.module.css'
 
 export function Header() {
   const { pathname } = useLocation()
   const { refresh, loading } = usePortfolioData()
+  const { theme, toggleTheme } = useTheme()
   const title = NAV_ITEMS.find((item) => item.to === pathname)?.label ?? 'iPot'
 
   return (
@@ -17,6 +19,15 @@ export function Header() {
           <Search size={14} />
           <span>Search</span>
         </div>
+        <button
+          type="button"
+          className={styles.iconButton}
+          onClick={toggleTheme}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-label="Toggle color theme"
+        >
+          {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+        </button>
         <button
           type="button"
           className={styles.iconButton}

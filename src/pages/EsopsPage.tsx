@@ -1,15 +1,13 @@
-import { AllocationDonut, type DonutDatum } from '../components/AllocationDonut'
 import { Card } from '../components/Card'
-import { colorForIndex } from '../utils/colors'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { ListChecks, PieChart, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { ListChecks, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedEsop } from '../data/types'
-import { formatInr, formatPct } from '../utils/format'
+import { formatCurrency, formatInr, formatPct, formatUsd } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedEsop>[] = [
@@ -26,7 +24,7 @@ const columns: HoldingsColumn<ComputedEsop>[] = [
     key: 'avg_purchase_price',
     label: 'Avg Purchase Price',
     align: 'right',
-    render: (r) => r.avg_purchase_price.toLocaleString('en-IN'),
+    render: (r) => formatCurrency(r.avg_purchase_price, r.currency),
     sortValue: (r) => r.avg_purchase_price,
     hideOnMobile: true,
   },
@@ -34,23 +32,22 @@ const columns: HoldingsColumn<ComputedEsop>[] = [
     key: 'current_price',
     label: 'Current Price',
     align: 'right',
-    render: (r) => r.current_price.toLocaleString('en-IN'),
+    render: (r) => formatCurrency(r.current_price, r.currency),
     sortValue: (r) => r.current_price,
     hideOnMobile: true,
   },
-  { key: 'currency', label: 'Currency', render: (r) => r.currency, sortValue: (r) => r.currency, hideOnMobile: true },
   {
     key: 'invested',
     label: 'Invested',
     align: 'right',
-    render: (r) => r.invested.toLocaleString('en-IN'),
+    render: (r) => formatCurrency(r.invested, r.currency),
     sortValue: (r) => r.invested,
   },
   {
     key: 'value',
     label: 'Value',
     align: 'right',
-    render: (r) => r.current.toLocaleString('en-IN'),
+    render: (r) => formatCurrency(r.current, r.currency),
     sortValue: (r) => r.current,
   },
   {
@@ -75,26 +72,30 @@ export function EsopsPage() {
 
   if (error) return <ErrorState message={error} />
 
-  const gainPctInr = totals.investedInr === 0 ? 0 : (totals.gainInr / totals.investedInr) * 100
-  const donutData: DonutDatum[] = rows.map((r, i) => ({ name: r.company, value: r.currentInr, color: colorForIndex(i) }))
-
   return (
     <>
       <div className={styles.kpiRow}>
-        <KpiCard icon={Wallet} label="Invested" value={formatInr(totals.investedInr)} />
-        <KpiCard icon={TrendingUp} label="Current Value" value={formatInr(totals.currentInr)} />
         <KpiCard
-          icon={totals.gainInr >= 0 ? TrendingUp : TrendingDown}
+          icon={Wallet}
+          label="Invested"
+          value={formatUsd(totals.invested)}
+          sublabel={formatInr(totals.investedInr)}
+        />
+        <KpiCard
+          icon={TrendingUp}
+          label="Current Value"
+          value={formatUsd(totals.current)}
+          sublabel={formatInr(totals.currentInr)}
+        />
+        <KpiCard
+          icon={totals.gain >= 0 ? TrendingUp : TrendingDown}
           label="Gain / Loss"
-          value={formatInr(totals.gainInr)}
-          badge={formatPct(gainPctInr)}
+          value={formatUsd(totals.gain)}
+          badge={formatPct(totals.gainPct)}
+          badgeTone={totals.gainPct}
+          sublabel={formatInr(totals.gainInr)}
         />
         <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
-      </div>
-      <div className={styles.chartRow}>
-        <Card icon={PieChart} title="By Company" align="center">
-          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
-        </Card>
       </div>
       <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>

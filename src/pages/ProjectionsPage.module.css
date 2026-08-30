@@ -1,0 +1,45 @@
+.settingsRow {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  min-width: 0;
+}
+
+.controls {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.fieldLabel {
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.tenureStepper {
+  width: 120px;
+}
+
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.rateStepper {
+  width: 92px;
+}
+
+@media (max-width: 900px) {
+  .settingsRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

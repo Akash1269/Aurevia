@@ -5,15 +5,9 @@
   flex-wrap: wrap;
 }
 
-.input {
+.amountStepper {
   flex: 1;
   min-width: 110px;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text-h);
-  font-size: var(--text-md);
 }
 
 .select {

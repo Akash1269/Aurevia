@@ -6,6 +6,7 @@ import {
   Layers,
   LayoutGrid,
   Lock,
+  Rocket,
   Shield,
   TrendingUp,
   type LucideIcon,
@@ -26,5 +27,6 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/savings', label: 'Savings Accounts', Icon: Landmark },
   { to: '/fixed-deposits', label: 'Fixed Deposits', Icon: Lock },
   { to: '/pf', label: 'India PF', Icon: Shield },
+  { to: '/projections', label: 'Projections', Icon: Rocket },
   { to: '/currency-converter', label: 'Currency Converter', Icon: ArrowRightLeft },
 ]

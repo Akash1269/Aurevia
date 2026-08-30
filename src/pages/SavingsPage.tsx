@@ -1,10 +1,8 @@
-import { AllocationDonut, type DonutDatum } from '../components/AllocationDonut'
 import { Card } from '../components/Card'
-import { colorForIndex } from '../utils/colors'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Calendar, Landmark, PieChart, PiggyBank, Wallet } from 'lucide-react'
+import { Calendar, Landmark, PiggyBank, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedSavings } from '../data/types'
@@ -56,7 +54,6 @@ export function SavingsPage() {
       ? 0
       : rows.reduce((sum, r) => sum + r.interest_rate_pct * r.currentInr, 0) / totals.currentInr
 
-  const donutData: DonutDatum[] = rows.map((r, i) => ({ name: r.bank_name, value: r.currentInr, color: colorForIndex(i) }))
   const estimatedAnnualInterest = totals.currentInr * (weightedRate / 100)
 
   return (
@@ -66,11 +63,6 @@ export function SavingsPage() {
         <KpiCard icon={Calendar} label="Weighted Avg Interest Rate" value={`${weightedRate.toFixed(2)}%`} />
         <KpiCard icon={Landmark} label="Accounts" value={String(rows.length)} />
         <KpiCard icon={PiggyBank} label="Est. Annual Interest" value={formatInr(estimatedAnnualInterest)} />
-      </div>
-      <div className={styles.chartRow}>
-        <Card icon={PieChart} title="By Bank" align="center">
-          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
-        </Card>
       </div>
       <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>

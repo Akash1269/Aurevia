@@ -54,7 +54,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --text: #9ca3af;
     --text-h: #f3f4f6;
     --bg: #16171d;
@@ -73,6 +73,26 @@
     --gain: #4ade80;
     --loss: #f87171;
   }
+}
+
+:root[data-theme='dark'] {
+  --text: #9ca3af;
+  --text-h: #f3f4f6;
+  --bg: #16171d;
+  --card-bg: #1c1d24;
+  --border: #2e303a;
+  --accent: #c084fc;
+
+  --alloc-1: #3b82f6;
+  --alloc-2: #60a5fa;
+  --alloc-3: #93c5fd;
+  --alloc-4: #bfdbfe;
+  --alloc-5: #94a3b8;
+  --alloc-6: #cbd5e1;
+  --alloc-7: #64748b;
+
+  --gain: #4ade80;
+  --loss: #f87171;
 }
 
 * {

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ArrowLeftRight } from 'lucide-react'
 import { Card } from './Card'
 import { toInr } from '../data/portfolio'
+import { NumberStepper } from './NumberStepper'
 import type { RatesMap } from '../data/types'
 import primitives from '../styles/primitives.module.css'
 import styles from './CurrencyConverter.module.css'
@@ -19,12 +20,7 @@ export function CurrencyConverter({ ratesMap }: { ratesMap: RatesMap }) {
   return (
     <Card icon={ArrowLeftRight} title="Currency Converter">
       <div className={styles.row}>
-        <input
-          type="number"
-          className={styles.input}
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-        />
+        <NumberStepper className={styles.amountStepper} value={amount} min={0} onChange={setAmount} aria-label="Amount" />
         <select className={styles.select} value={from} onChange={(e) => setFrom(e.target.value)}>
           {codes.map((code) => (
             <option key={code} value={code}>

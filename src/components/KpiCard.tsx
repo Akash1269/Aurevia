@@ -7,10 +7,14 @@ interface KpiCardProps {
   label: string
   value: string
   badge?: string
+  badgeTone?: number
   sublabel?: string
 }
 
-export function KpiCard({ icon: Icon, label, value, badge, sublabel }: KpiCardProps) {
+export function KpiCard({ icon: Icon, label, value, badge, badgeTone, sublabel }: KpiCardProps) {
+  const badgeToneClass =
+    badgeTone === undefined || badgeTone === 0 ? '' : badgeTone > 0 ? styles.badgePositive : styles.badgeNegative
+
   return (
     <div className={`${primitives.card} ${styles.card}`}>
       <div className={styles.label}>
@@ -19,7 +23,7 @@ export function KpiCard({ icon: Icon, label, value, badge, sublabel }: KpiCardPr
       </div>
       <div className={styles.valueRow}>
         <span className={primitives.bigNumber}>{value}</span>
-        {badge && <span className={primitives.badge}>{badge}</span>}
+        {badge && <span className={`${primitives.badge} ${badgeToneClass}`}>{badge}</span>}
       </div>
       <div className={`${primitives.mutedText} ${styles.sublabel}`}>{sublabel ?? ' '}</div>
     </div>

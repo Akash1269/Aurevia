@@ -41,6 +41,14 @@ export function formatUsd(value: number): string {
   return usdFormatter.format(value)
 }
 
+export function formatCurrency(value: number, currencyCode: string): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currencyCode,
+    maximumFractionDigits: 1,
+  }).format(value)
+}
+
 export function formatPct(value: number): string {
   return pctFormatter.format(value / 100)
 }

@@ -1,14 +1,15 @@
-import { AllocationDonut, type DonutDatum } from '../components/AllocationDonut'
 import { Card } from '../components/Card'
-import { colorForIndex } from '../utils/colors'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { ListChecks, PieChart, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { InfoTooltip } from '../components/InfoTooltip'
+import { StockHeatmap, type HeatmapDatum } from '../components/StockHeatmap'
+import { LayoutGrid, ListChecks, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedUsStock } from '../data/types'
+import primitives from '../styles/primitives.module.css'
 import { formatInr, formatPct, formatUsd } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
@@ -56,7 +57,7 @@ export function UsStocksPage() {
 
   if (error) return <ErrorState message={error} />
 
-  const donutData: DonutDatum[] = rows.map((r, i) => ({ name: r.symbol, value: r.current, color: colorForIndex(i) }))
+  const heatmapData: HeatmapDatum[] = rows.map((r) => ({ name: r.symbol, size: r.currentInr, gainPct: r.gainPct }))
   const usdToInr = ratesMap.USD
 
   return (
@@ -79,15 +80,29 @@ export function UsStocksPage() {
           label="Gain / Loss"
           value={formatUsd(totals.gain)}
           badge={formatPct(totals.gainPct)}
+          badgeTone={totals.gainPct}
           sublabel={usdToInr ? `1 USD ≈ ${formatInr(usdToInr)}` : undefined}
         />
         <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
       </div>
-      <div className={styles.chartRow}>
-        <Card icon={PieChart} title="By Symbol" align="center">
-          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
-        </Card>
-      </div>
+      <Card icon={LayoutGrid} title="By Symbol">
+        {rows.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <>
+            <StockHeatmap data={heatmapData} />
+            <div className={styles.chartLegend}>
+              <InfoTooltip>
+                Dark green ≥ 30% gain · Green 0–30% gain
+                <br />
+                Light red 0–15% loss · Dark red &gt; 15% loss
+              </InfoTooltip>
+              <span className={primitives.mutedText}>Size = current value · Color = gain/loss</span>
+            </div>
+          </>
+        )}
+      </Card>
+
       <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>
   )

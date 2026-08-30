@@ -18,8 +18,19 @@
   gap: var(--space-3);
   flex-wrap: wrap;
   margin-bottom: var(--space-1);
+  min-height: calc(var(--text-base) * 1.45 + var(--space-1) * 2);
 }
 
 .sublabel {
   margin-top: var(--space-3);
+}
+
+.badgePositive {
+  background: color-mix(in srgb, var(--gain) 18%, transparent);
+  color: var(--gain);
+}
+
+.badgeNegative {
+  background: color-mix(in srgb, var(--loss) 18%, transparent);
+  color: var(--loss);
 }

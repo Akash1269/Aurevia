@@ -1,0 +1,69 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  padding-right: 26px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: var(--text-md);
+  font-family: inherit;
+  -moz-appearance: textfield;
+}
+
+.compact {
+  padding: var(--space-2) var(--space-3);
+  padding-right: 24px;
+  font-size: var(--text-sm);
+  text-align: right;
+}
+
+.input::-webkit-inner-spin-button,
+.input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.steppers {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  bottom: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.stepButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.stepButton:hover {
+  background: var(--card-bg);
+  color: var(--text-h);
+}
+
+.stepButton:active {
+  background: var(--border);
+}
+
+.stepButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

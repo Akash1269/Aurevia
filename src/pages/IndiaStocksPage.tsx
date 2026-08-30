@@ -95,6 +95,7 @@ export function IndiaStocksPage() {
           label="Gain / Loss"
           value={formatInr(totals.gain)}
           badge={formatPct(totals.gainPct)}
+          badgeTone={totals.gainPct}
         />
         <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
       </div>

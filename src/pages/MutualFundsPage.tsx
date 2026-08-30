@@ -72,6 +72,7 @@ export function MutualFundsPage() {
           label="Gain / Loss"
           value={formatInr(totals.gain)}
           badge={formatPct(totals.gainPct)}
+          badgeTone={totals.gainPct}
         />
         <KpiCard icon={Layers} label="Number of Funds" value={String(rows.length)} />
       </div>
