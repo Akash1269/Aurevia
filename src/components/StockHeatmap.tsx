@@ -1,5 +1,5 @@
 import { ResponsiveContainer, Tooltip, Treemap } from 'recharts'
-import { formatInr } from '../utils/format'
+import { formatCompactInr, formatInr } from '../utils/format'
 
 export interface HeatmapDatum {
   name: string
@@ -23,9 +23,20 @@ interface CellContentProps {
   size?: number
   gainPct?: number
   index?: number
+  formatCompact?: (value: number) => string
 }
 
-function CellContent({ x = 0, y = 0, width = 0, height = 0, name = '', size = 0, gainPct = 0, index = 0 }: CellContentProps) {
+function CellContent({
+  x = 0,
+  y = 0,
+  width = 0,
+  height = 0,
+  name = '',
+  size = 0,
+  gainPct = 0,
+  index = 0,
+  formatCompact = formatCompactInr,
+}: CellContentProps) {
   const showValue = width > 70 && height > 46
   const showGain = showValue || (width > 55 && height > 32)
   const showCodeOnly = !showGain && width > 22 && height > 14
@@ -43,13 +54,9 @@ function CellContent({ x = 0, y = 0, width = 0, height = 0, name = '', size = 0,
             <text x={x + 5} y={y + 15} fontSize={11} fontWeight={600} fill="#ffffff">
               {name}
             </text>
-            {showValue && (
-              <text x={x + 5} y={y + 29} fontSize={10} fill="rgba(255,255,255,0.85)">
-                {formatInr(size)}
-              </text>
-            )}
             {showGain && (
-              <text x={x + 5} y={showValue ? y + 43 : y + 29} fontSize={10} fill="rgba(255,255,255,0.85)">
+              <text x={x + 5} y={y + 29} fontSize={10} fill="rgba(255,255,255,0.85)">
+                {showValue && `${formatCompact(size)} · `}
                 {gainPct > 0 ? '+' : ''}
                 {gainPct.toFixed(1)}%
               </text>
@@ -64,9 +71,10 @@ function CellContent({ x = 0, y = 0, width = 0, height = 0, name = '', size = 0,
 interface HeatmapTooltipProps {
   active?: boolean
   payload?: { payload?: HeatmapDatum }[]
+  formatFull?: (value: number) => string
 }
 
-function HeatmapTooltip({ active, payload }: HeatmapTooltipProps) {
+function HeatmapTooltip({ active, payload, formatFull = formatInr }: HeatmapTooltipProps) {
   const datum = payload?.[0]?.payload
   if (!active || !datum) return null
   return (
@@ -81,7 +89,7 @@ function HeatmapTooltip({ active, payload }: HeatmapTooltipProps) {
       }}
     >
       <div style={{ fontWeight: 600, marginBottom: 'var(--space-1)' }}>{datum.name}</div>
-      <div>{formatInr(datum.size)}</div>
+      <div>{formatFull(datum.size)}</div>
       <div>
         {datum.gainPct > 0 ? '+' : ''}
         {datum.gainPct.toFixed(1)}%
@@ -90,12 +98,20 @@ function HeatmapTooltip({ active, payload }: HeatmapTooltipProps) {
   )
 }
 
-export function StockHeatmap({ data }: { data: HeatmapDatum[] }) {
+export function StockHeatmap({
+  data,
+  formatCompact = formatCompactInr,
+  formatFull = formatInr,
+}: {
+  data: HeatmapDatum[]
+  formatCompact?: (value: number) => string
+  formatFull?: (value: number) => string
+}) {
   const sorted = [...data].sort((a, b) => b.size - a.size)
   return (
     <ResponsiveContainer width="100%" height={280}>
-      <Treemap data={sorted} dataKey="size" isAnimationActive={false} content={<CellContent />}>
-        <Tooltip content={<HeatmapTooltip />} />
+      <Treemap data={sorted} dataKey="size" isAnimationActive={false} content={<CellContent formatCompact={formatCompact} />}>
+        <Tooltip content={<HeatmapTooltip formatFull={formatFull} />} />
       </Treemap>
     </ResponsiveContainer>
   )

@@ -10,7 +10,7 @@ import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedUsStock } from '../data/types'
 import primitives from '../styles/primitives.module.css'
-import { formatInr, formatPct, formatUsd } from '../utils/format'
+import { formatCompactUsd, formatInr, formatPct, formatUsd } from '../utils/format'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedUsStock>[] = [
@@ -57,7 +57,7 @@ export function UsStocksPage() {
 
   if (error) return <ErrorState message={error} />
 
-  const heatmapData: HeatmapDatum[] = rows.map((r) => ({ name: r.symbol, size: r.currentInr, gainPct: r.gainPct }))
+  const heatmapData: HeatmapDatum[] = rows.map((r) => ({ name: r.symbol, size: r.current, gainPct: r.gainPct }))
   const usdToInr = ratesMap.USD
 
   return (
@@ -90,7 +90,7 @@ export function UsStocksPage() {
           <EmptyState />
         ) : (
           <>
-            <StockHeatmap data={heatmapData} />
+            <StockHeatmap data={heatmapData} formatCompact={formatCompactUsd} formatFull={formatUsd} />
             <div className={styles.chartLegend}>
               <InfoTooltip>
                 Dark green ≥ 30% gain · Green 0–30% gain

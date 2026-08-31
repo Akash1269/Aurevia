@@ -29,6 +29,13 @@ const compactInrFormatter = new Intl.NumberFormat('en-IN', {
   maximumFractionDigits: 1,
 })
 
+const compactUsdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  notation: 'compact',
+  maximumFractionDigits: 1,
+})
+
 export function formatInr(value: number): string {
   return inrFormatter.format(value)
 }
@@ -39,6 +46,10 @@ export function formatCompactInr(value: number): string {
 
 export function formatUsd(value: number): string {
   return usdFormatter.format(value)
+}
+
+export function formatCompactUsd(value: number): string {
+  return compactUsdFormatter.format(value)
 }
 
 export function formatCurrency(value: number, currencyCode: string): string {
