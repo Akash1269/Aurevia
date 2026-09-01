@@ -1,0 +1,3 @@
+bank_name,account_type,balance,interest_rate_pct,currency
+Sample Bank,Savings,500000,3.5,INR
+Demo National Bank,Checking,8000,0.5,USD
