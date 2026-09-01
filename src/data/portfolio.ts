@@ -16,7 +16,7 @@ import type {
   MutualFundRow,
   Overview,
   OverviewCategory,
-  PfAccountSummaryRawRow,
+  PfCompanySummary,
   PfEntryType,
   PfStatementRawRow,
   PfStatementRow,
@@ -254,38 +254,50 @@ export function computeFixedDeposits(
   return { rows: computed, totals: sumTotals(computed), error: null }
 }
 
-// Balance per company, derived the same way as the PF page's own Account
-// Summary/Total Balance: contribution rows count employee+employer (pension
-// goes to the separate EPS pension pot, not the withdrawable PF corpus),
-// interest rows count in full. Keep this formula in sync with
-// PfPage.tsx's buildAccountSummary - both must agree on what "balance" means.
-function balanceByCompany(statementRows: PfStatementRow[]): Map<string, number> {
-  const map = new Map<string, number>()
-  for (const row of statementRows) {
-    const amount = row.type === 'Contribution' ? row.employee + row.employer : row.total
-    map.set(row.company, (map.get(row.company) ?? 0) + amount)
+// The PF page's Account Summary table and every PF figure elsewhere
+// (Overview, Top Holdings, Currency Exposure) both read from this: one row
+// per company, aggregated straight from the pf.csv ledger.
+// Contribution rows count employee+employer (pension goes to the separate
+// EPS pension pot, not the withdrawable PF corpus); interest rows count in
+// full.
+export function buildPfAccountSummary(rows: PfStatementRow[]): PfCompanySummary[] {
+  const map = new Map<string, Omit<PfCompanySummary, 'total' | 'displayName'>>()
+  for (const row of rows) {
+    const year = Number(row.transaction_date.split('/')[2]) || 0
+    const existing = map.get(row.company) ?? {
+      company: row.company,
+      fromYear: year,
+      toYear: year,
+      employee: 0,
+      employer: 0,
+      interestEarned: 0,
+    }
+    existing.fromYear = Math.min(existing.fromYear, year)
+    existing.toYear = Math.max(existing.toYear, year)
+    if (row.type === 'Contribution') {
+      existing.employee += row.employee
+      existing.employer += row.employer
+    } else {
+      existing.interestEarned += row.total
+    }
+    map.set(row.company, existing)
   }
-  return map
+  return Array.from(map.values())
+    .map((r) => ({ ...r, displayName: r.company, total: r.employee + r.employer + r.interestEarned }))
+    .sort((a, b) => a.company.localeCompare(b.company))
 }
 
-export function computePf(rows: PfAccountSummaryRawRow[], statementRows: PfStatementRow[] = []): CategoryResult<ComputedPf> {
-  const balances = balanceByCompany(statementRows)
-  const computed = rows
-    .filter((row) => row.company && row.member_id)
-    .map((row) => {
-      const balance = balances.get(row.company) ?? row.current_balance
-      return {
-        ...row,
-        displayName: `${row.company} · ${row.member_id}`,
-        invested: balance,
-        current: balance,
-        gain: 0,
-        gainPct: 0,
-        investedInr: balance,
-        currentInr: balance,
-        gainInr: 0,
-      }
-    })
+export function computePf(statementRows: PfStatementRow[]): CategoryResult<ComputedPf> {
+  const computed = buildPfAccountSummary(statementRows).map((row) => ({
+    ...row,
+    invested: row.total,
+    current: row.total,
+    gain: 0,
+    gainPct: 0,
+    investedInr: row.total,
+    currentInr: row.total,
+    gainInr: 0,
+  }))
   return { rows: computed, totals: sumTotals(computed), error: null }
 }
 

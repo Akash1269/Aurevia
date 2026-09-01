@@ -1,3 +1,0 @@
-member_id,company,from_year,to_year,current_balance,adjustments,employee,employer,interest_earned,transfer_in,withdrawal
-DEMO0001,Acme Corp,2020,2023,0,0,120000,120000,25000,0,0
-DEMO0002,Globex Inc,2023,2026,0,0,80000,80000,8000,0,0

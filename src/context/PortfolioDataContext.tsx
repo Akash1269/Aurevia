@@ -25,7 +25,6 @@ import type {
   IndiaStockRow,
   MutualFundRow,
   Overview,
-  PfAccountSummaryRawRow,
   PfStatementRawRow,
   PfStatementRow,
   PortfolioResults,
@@ -113,7 +112,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       const manifest = await loadManifest()
       if (cancelled) return
 
-      const [ratesRes, usStocksRes, indiaStocksRes, mutualFundsRes, esopsRes, savingsRes, fixedDepositsRes, pfRes, pfStatementsRes] =
+      const [ratesRes, usStocksRes, indiaStocksRes, mutualFundsRes, esopsRes, savingsRes, fixedDepositsRes, pfStatementsRes] =
         await Promise.allSettled([
           loadCsv<CurrencyRateRow>(manifest.currencyRates),
           loadCsv<UsStockRow>(manifest.usStocks),
@@ -122,7 +121,6 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
           loadCsv<EsopRow>(manifest.esops),
           loadCsv<SavingsRow>(manifest.savings),
           loadCsv<FixedDepositRow>(manifest.fixedDeposits),
-          loadCsv<PfAccountSummaryRawRow>(manifest.pf),
           loadCsv<PfStatementRawRow>(manifest.pfStatements),
         ])
 
@@ -140,7 +138,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         esops: fromSettled(esopsRes, (rows) => computeEsops(rows, rates)),
         savings: fromSettled(savingsRes, (rows) => computeSavings(rows, rates)),
         fixedDeposits: fromSettled(fixedDepositsRes, (rows) => computeFixedDeposits(rows, rates)),
-        pf: fromSettled(pfRes, (rows) => computePf(rows, statementsState.rows)),
+        pf: statementsState.error ? { rows: [], totals: emptyTotals(), error: statementsState.error } : computePf(statementsState.rows),
       })
 
       setPfStatements(statementsState)

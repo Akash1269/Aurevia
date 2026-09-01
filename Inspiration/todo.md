@@ -1,2 +1,0 @@
-1. For projected graph, instead of trend line use stacked bar chart, to show stacks of all category of portfolio on how it is growing, show percentage share of stack on it, make graph show progress for every year over next 10 years, allow configuration to show next 15 and 20 years as well
-2. For projected graph, put configuration in some modal or inline callout to configure with button at top to open it, and put kpi cards at top and graph below it.

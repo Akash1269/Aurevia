@@ -56,16 +56,16 @@ reload the page — there's no build step required for data changes in dev.
 | `esops.csv` | ESOPs | `company, quantity, avg_purchase_price, current_price, currency` |
 | `savings-accounts.csv` | Savings Accounts | `bank_name, account_type, balance, interest_rate_pct, currency` |
 | `fixed-deposits.csv` | Fixed Deposits | `bank_name, principal, interest_rate_pct, start_date, maturity_date, maturity_value, currency` |
-| `PF/account-summary.csv` | India PF (per-account metadata) | `member_id, company, from_year, to_year, ...` |
-| `PF/statements.csv` | India PF (transaction ledger) | `company, month, transaction_date, type, employee, employer, pension, notes` |
+| `pf.csv` | India PF | `company, month, transaction_date, type, employee, employer, pension, notes` |
 | `currency-rates.csv` | Exchange rates | `currency_code, rate_to_inr` — used to convert every non-INR holding to INR |
 
 Notes:
 
-- `PF/statements.csv` is the source of truth for the PF page — contribution
-  and interest rows are added there directly (`type` is either
-  `Contribution` or `Interest`). `PF/account-summary.csv` only supplies
-  per-account metadata that isn't in the ledger.
+- `pf.csv` is the sole source for India PF — every contribution
+  and interest row lives there directly (`type` is either `Contribution` or
+  `Interest`), and the per-company Account Summary shown on the PF page and
+  used everywhere else in the app (Overview, Top Holdings, Currency
+  Exposure) is aggregated from it at read time.
 - Add a currency to `currency-rates.csv` before using that currency code
   elsewhere (e.g. in `esops.csv` or `savings-accounts.csv`), or amounts in
   that currency won't convert to INR correctly.

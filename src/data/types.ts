@@ -8,7 +8,6 @@ export interface DataManifest {
   esops: string
   savings: string
   fixedDeposits: string
-  pf: string
   pfStatements: string
 }
 
@@ -82,18 +81,15 @@ export interface PfStatementRow extends Omit<PfStatementRawRow, 'notes'> {
   notes: string
 }
 
-export interface PfAccountSummaryRawRow {
-  member_id: string
+export interface PfCompanySummary {
+  displayName: string
   company: string
-  from_year: number
-  to_year: number
-  current_balance: number
-  adjustments: number
+  fromYear: number
+  toYear: number
   employee: number
   employer: number
-  interest_earned: number
-  transfer_in: number
-  withdrawal: number
+  interestEarned: number
+  total: number
 }
 
 export interface CurrencyRateRow {
@@ -118,7 +114,7 @@ export type ComputedMutualFund = MutualFundRow & WithComputed
 export type ComputedEsop = EsopRow & WithComputed
 export type ComputedSavings = SavingsRow & WithComputed
 export type ComputedFixedDeposit = FixedDepositRow & WithComputed & { accrualPct: number }
-export type ComputedPf = PfAccountSummaryRawRow & WithComputed
+export type ComputedPf = PfCompanySummary & WithComputed
 
 export interface CategoryTotals {
   invested: number

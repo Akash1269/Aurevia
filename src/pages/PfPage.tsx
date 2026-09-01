@@ -8,7 +8,8 @@ import { Building2, Calendar, Filter, History, ListChecks, ListFilter, Shield, W
 import { KpiCard } from '../components/KpiCard'
 import { MultiSelectDropdown } from '../components/MultiSelectDropdown'
 import { usePortfolioData } from '../context/PortfolioDataContext'
-import type { PfEntryType, PfStatementRow } from '../data/types'
+import { buildPfAccountSummary } from '../data/portfolio'
+import type { PfCompanySummary, PfEntryType, PfStatementRow } from '../data/types'
 import primitives from '../styles/primitives.module.css'
 import { formatInr, formatMonth, monthSortKey } from '../utils/format'
 import categoryStyles from './CategoryPage.module.css'
@@ -19,51 +20,6 @@ const ENTRY_TYPE_OPTIONS: { value: PfEntryType; label: string }[] = [
   { value: 'Contribution', label: 'Contribution' },
   { value: 'Interest', label: 'Interest' },
 ]
-
-interface PfCompanySummary {
-  displayName: string
-  company: string
-  fromYear: number
-  toYear: number
-  employee: number
-  employer: number
-  interestEarned: number
-  total: number
-}
-
-// Account Summary is built entirely from statements.csv now (not
-// account-summary.csv). That ledger has no transfer/withdrawal transactions,
-// so Member ID, Current Balance, Adjustments, Transfer-In, and Withdrawal
-// have no honest source here and are left out rather than faked - summing
-// contributions alone would show closed accounts (money since transferred
-// to a later employer) as still holding a large positive balance.
-function buildAccountSummary(rows: PfStatementRow[]): PfCompanySummary[] {
-  const map = new Map<string, Omit<PfCompanySummary, 'total'>>()
-  for (const row of rows) {
-    const year = Number(row.transaction_date.split('/')[2]) || 0
-    const existing = map.get(row.company) ?? {
-      displayName: row.company,
-      company: row.company,
-      fromYear: year,
-      toYear: year,
-      employee: 0,
-      employer: 0,
-      interestEarned: 0,
-    }
-    existing.fromYear = Math.min(existing.fromYear, year)
-    existing.toYear = Math.max(existing.toYear, year)
-    if (row.type === 'Contribution') {
-      existing.employee += row.employee
-      existing.employer += row.employer
-    } else {
-      existing.interestEarned += row.total
-    }
-    map.set(row.company, existing)
-  }
-  return Array.from(map.values())
-    .map((r) => ({ ...r, total: r.employee + r.employer + r.interestEarned }))
-    .sort((a, b) => a.company.localeCompare(b.company))
-}
 
 const accountSummaryColumns: HoldingsColumn<PfCompanySummary>[] = [
   {
@@ -156,7 +112,7 @@ export function PfPage() {
 
   if (error) return <ErrorState message={error} />
 
-  const accountSummary = buildAccountSummary(pfStatements.rows)
+  const accountSummary = buildPfAccountSummary(pfStatements.rows)
 
   const totalContributions = accountSummary.reduce((sum, r) => sum + r.employee + r.employer, 0)
   const totalInterestEarned = accountSummary.reduce((sum, r) => sum + r.interestEarned, 0)

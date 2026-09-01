@@ -15,7 +15,6 @@ function withBaseAll(manifest: DataManifest): DataManifest {
     esops: withBase(manifest.esops),
     savings: withBase(manifest.savings),
     fixedDeposits: withBase(manifest.fixedDeposits),
-    pf: withBase(manifest.pf),
     pfStatements: withBase(manifest.pfStatements),
   }
 }
@@ -30,8 +29,7 @@ export const DEFAULT_MANIFEST: DataManifest = {
   esops: 'data/esops.csv',
   savings: 'data/savings-accounts.csv',
   fixedDeposits: 'data/fixed-deposits.csv',
-  pf: 'data/PF/account-summary.csv',
-  pfStatements: 'data/PF/statements.csv',
+  pfStatements: 'data/pf.csv',
 }
 
 export async function loadManifest(): Promise<DataManifest> {

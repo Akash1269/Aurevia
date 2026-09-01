@@ -6,6 +6,5 @@
   "esops": "/data/esops.csv",
   "savings": "/data/savings-accounts.csv",
   "fixedDeposits": "/data/fixed-deposits.csv",
-  "pf": "/data/PF/account-summary.csv",
-  "pfStatements": "/data/PF/statements.csv"
+  "pfStatements": "/data/pf.csv"
 }
