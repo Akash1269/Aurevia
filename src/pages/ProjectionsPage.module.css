@@ -1,9 +1,29 @@
-.settingsRow {
-  display: grid;
-  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-  gap: var(--space-4);
-  align-items: start;
-  min-width: 0;
+.configRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.configButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  color: var(--text-h);
 }
 
 .controls {
@@ -24,8 +44,34 @@
   color: var(--text);
 }
 
+.presetGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.presetButton {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.presetButton:hover {
+  color: var(--text-h);
+}
+
+.presetButtonActive {
+  background: var(--text-h);
+  color: var(--card-bg);
+  border-color: var(--text-h);
+}
+
 .tenureStepper {
-  width: 120px;
+  width: 100px;
 }
 
 .resetButton {
@@ -36,10 +82,4 @@
 
 .rateStepper {
   width: 92px;
-}
-
-@media (max-width: 900px) {
-  .settingsRow {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }

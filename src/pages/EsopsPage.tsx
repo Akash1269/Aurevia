@@ -1,9 +1,12 @@
+import { AllocationBar } from '../components/AllocationBar'
+import { AllocationLegend } from '../components/AllocationLegend'
 import { Card } from '../components/Card'
+import { colorForIndex } from '../utils/colors'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { ListChecks, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedEsop } from '../data/types'
@@ -72,6 +75,15 @@ export function EsopsPage() {
 
   if (error) return <ErrorState message={error} />
 
+  const distribution = [...rows]
+    .sort((a, b) => b.currentInr - a.currentInr)
+    .map((r, i) => ({
+      label: r.company,
+      pct: totals.currentInr === 0 ? 0 : (r.currentInr / totals.currentInr) * 100,
+      amountInr: r.currentInr,
+      color: colorForIndex(i),
+    }))
+
   return (
     <>
       <div className={styles.kpiRow}>
@@ -95,7 +107,16 @@ export function EsopsPage() {
           badgeTone={totals.gainPct}
           sublabel={formatInr(totals.gainInr)}
         />
-        <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
+        <Card>
+          {rows.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <>
+              <AllocationBar segments={distribution} />
+              <AllocationLegend entries={distribution} />
+            </>
+          )}
+        </Card>
       </div>
       <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>

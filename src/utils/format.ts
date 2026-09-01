@@ -116,6 +116,12 @@ function parseMonth(value: string): Date | null {
     }
   }
 
+  // "31/03/2020" (day/month/year)
+  const dmyMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+  if (dmyMatch) {
+    return new Date(Number(dmyMatch[3]), Number(dmyMatch[2]) - 1, Number(dmyMatch[1]))
+  }
+
   return null
 }
 

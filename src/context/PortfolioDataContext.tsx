@@ -10,7 +10,7 @@ import {
   computePf,
   computeSavings,
   computeUsStocks,
-  decoratePfContributions,
+  decoratePfStatements,
   getCurrencyExposure,
   getTopHoldings,
   ratesToMap,
@@ -26,8 +26,8 @@ import type {
   MutualFundRow,
   Overview,
   PfAccountSummaryRawRow,
-  PfContributionRawRow,
-  PfContributionRow,
+  PfStatementRawRow,
+  PfStatementRow,
   PortfolioResults,
   RatesMap,
   SavingsRow,
@@ -62,7 +62,7 @@ interface PortfolioDataValue {
   overview: Overview
   topHoldings: TopHolding[]
   currencyExposure: CurrencyExposureEntry[]
-  pfContributions: SupplementalState<PfContributionRow>
+  pfStatements: SupplementalState<PfStatementRow>
   refresh: () => void
 }
 
@@ -102,7 +102,7 @@ const PortfolioDataContext = createContext<PortfolioDataValue | null>(null)
 export function PortfolioDataProvider({ children }: { children: ReactNode }) {
   const [ratesMap, setRatesMap] = useState<RatesMap>({ INR: 1 })
   const [results, setResults] = useState<PortfolioResults>(emptyResults)
-  const [pfContributions, setPfContributions] = useState<SupplementalState<PfContributionRow>>(emptySupplemental)
+  const [pfStatements, setPfStatements] = useState<SupplementalState<PfStatementRow>>(emptySupplemental)
   const [loading, setLoading] = useState(true)
   const [version, setVersion] = useState(0)
 
@@ -113,7 +113,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       const manifest = await loadManifest()
       if (cancelled) return
 
-      const [ratesRes, usStocksRes, indiaStocksRes, mutualFundsRes, esopsRes, savingsRes, fixedDepositsRes, pfRes, pfContributionsRes] =
+      const [ratesRes, usStocksRes, indiaStocksRes, mutualFundsRes, esopsRes, savingsRes, fixedDepositsRes, pfRes, pfStatementsRes] =
         await Promise.allSettled([
           loadCsv<CurrencyRateRow>(manifest.currencyRates),
           loadCsv<UsStockRow>(manifest.usStocks),
@@ -123,13 +123,15 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
           loadCsv<SavingsRow>(manifest.savings),
           loadCsv<FixedDepositRow>(manifest.fixedDeposits),
           loadCsv<PfAccountSummaryRawRow>(manifest.pf),
-          loadCsv<PfContributionRawRow>(manifest.pfContributions),
+          loadCsv<PfStatementRawRow>(manifest.pfStatements),
         ])
 
       if (cancelled) return
 
       const rates = ratesRes.status === 'fulfilled' ? ratesToMap(ratesRes.value) : { INR: 1 }
       setRatesMap(rates)
+
+      const statementsState = fromSettledRaw(pfStatementsRes, decoratePfStatements)
 
       setResults({
         usStocks: fromSettled(usStocksRes, (rows) => computeUsStocks(rows, rates)),
@@ -138,10 +140,10 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         esops: fromSettled(esopsRes, (rows) => computeEsops(rows, rates)),
         savings: fromSettled(savingsRes, (rows) => computeSavings(rows, rates)),
         fixedDeposits: fromSettled(fixedDepositsRes, (rows) => computeFixedDeposits(rows, rates)),
-        pf: fromSettled(pfRes, (rows) => computePf(rows)),
+        pf: fromSettled(pfRes, (rows) => computePf(rows, statementsState.rows)),
       })
 
-      setPfContributions(fromSettledRaw(pfContributionsRes, decoratePfContributions))
+      setPfStatements(statementsState)
 
       setLoading(false)
     }
@@ -169,10 +171,10 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       overview,
       topHoldings,
       currencyExposure,
-      pfContributions,
+      pfStatements,
       refresh,
     }),
-    [loading, ratesMap, results, overview, topHoldings, currencyExposure, pfContributions, refresh],
+    [loading, ratesMap, results, overview, topHoldings, currencyExposure, pfStatements, refresh],
   )
 
   return <PortfolioDataContext.Provider value={value}>{children}</PortfolioDataContext.Provider>

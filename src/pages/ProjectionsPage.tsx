@@ -11,14 +11,16 @@ import {
   Sliders,
   TrendingUp,
   Wallet,
+  X,
   type LucideIcon,
 } from 'lucide-react'
 import { Card } from '../components/Card'
+import { colorForIndex } from '../utils/colors'
 import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
 import { KpiCard } from '../components/KpiCard'
 import { NumberStepper } from '../components/NumberStepper'
-import { ProjectionChart, type ProjectionPoint } from '../components/ProjectionChart'
+import { ProjectionChart, type ProjectionSeriesDef, type ProjectionStackPoint } from '../components/ProjectionChart'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { PortfolioResults } from '../data/types'
 import primitives from '../styles/primitives.module.css'
@@ -27,6 +29,7 @@ import categoryStyles from './CategoryPage.module.css'
 import styles from './ProjectionsPage.module.css'
 
 const DEFAULT_TENURE = 10
+const TENURE_PRESETS = [10, 15, 20]
 
 interface CategoryDef {
   key: keyof PortfolioResults
@@ -65,6 +68,7 @@ export function ProjectionsPage() {
   const { results } = usePortfolioData()
   const [tenure, setTenure] = useState(DEFAULT_TENURE)
   const [rateOverrides, setRateOverrides] = useState<Record<string, number>>({})
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const categories: ProjectionRow[] = useMemo(() => {
     const savingsRate = weightedInterestRate(results.savings.rows, results.savings.totals.currentInr)
@@ -91,11 +95,21 @@ export function ProjectionsPage() {
   const totalGrowthPct = totalCurrent === 0 ? 0 : (totalGrowth / totalCurrent) * 100
   const blendedCagr = totalCurrent === 0 || tenure === 0 ? 0 : ((totalProjected / totalCurrent) ** (1 / tenure) - 1) * 100
 
-  const chartData: ProjectionPoint[] = useMemo(() => {
-    return Array.from({ length: tenure + 1 }, (_, year) => ({
-      label: year === 0 ? 'Today' : `Yr ${year}`,
-      value: categories.reduce((sum, c) => sum + projectedValue(c.currentInr, rateOverrides[c.key] ?? c.defaultRate, year), 0),
-    }))
+  const series: ProjectionSeriesDef[] = useMemo(
+    () => categories.map((c, i) => ({ key: c.key, label: c.displayName, color: colorForIndex(i) })),
+    [categories],
+  )
+
+  const chartData: ProjectionStackPoint[] = useMemo(() => {
+    return Array.from({ length: tenure + 1 }, (_, year) => {
+      const point: ProjectionStackPoint = { label: year === 0 ? 'Today' : `Yr ${year}`, total: 0 }
+      for (const c of categories) {
+        const value = projectedValue(c.currentInr, rateOverrides[c.key] ?? c.defaultRate, year)
+        point[c.key] = value
+        point.total += value
+      }
+      return point
+    })
   }, [categories, tenure, rateOverrides])
 
   const columns: HoldingsColumn<ProjectionRow>[] = [
@@ -149,36 +163,65 @@ export function ProjectionsPage() {
 
   return (
     <>
-      <div className={styles.settingsRow}>
-        <Card icon={Sliders} title="Projection Settings">
-          <div className={styles.controls}>
-            <div className={styles.field}>
-              <label className={styles.fieldLabel} htmlFor="projection-tenure">
-                Tenure (years)
-              </label>
-              <NumberStepper
-                id="projection-tenure"
-                className={styles.tenureStepper}
-                value={tenure}
-                min={1}
-                max={40}
-                onChange={setTenure}
-                aria-label="Tenure in years"
-              />
-            </div>
+      <div className={styles.configRow}>
+        <button
+          type="button"
+          className={`${primitives.pillButtonLight} ${styles.configButton}`}
+          onClick={() => setSettingsOpen((open) => !open)}
+          aria-expanded={settingsOpen}
+        >
+          <Sliders size={14} />
+          Configure projection
+        </button>
+      </div>
+
+      {settingsOpen && (
+        <Card
+          icon={Sliders}
+          title="Projection Settings"
+          actions={
             <button
               type="button"
-              className={`${primitives.pillButtonLight} ${styles.resetButton}`}
-              onClick={handleReset}
+              className={styles.closeButton}
+              onClick={() => setSettingsOpen(false)}
+              aria-label="Close settings"
             >
+              <X size={16} />
+            </button>
+          }
+        >
+          <div className={styles.controls}>
+            <div className={styles.field}>
+              <span className={styles.fieldLabel}>Tenure (years)</span>
+              <div className={styles.presetGroup}>
+                {TENURE_PRESETS.map((years) => (
+                  <button
+                    key={years}
+                    type="button"
+                    className={`${styles.presetButton} ${tenure === years ? styles.presetButtonActive : ''}`}
+                    onClick={() => setTenure(years)}
+                  >
+                    {years}Y
+                  </button>
+                ))}
+                <NumberStepper
+                  id="projection-tenure"
+                  className={styles.tenureStepper}
+                  value={tenure}
+                  min={1}
+                  max={40}
+                  onChange={setTenure}
+                  aria-label="Custom tenure in years"
+                />
+              </div>
+            </div>
+            <button type="button" className={`${primitives.pillButtonLight} ${styles.resetButton}`} onClick={handleReset}>
               <RotateCcw size={14} />
               Reset to defaults
             </button>
           </div>
         </Card>
-
-        <ProjectionChart data={chartData} />
-      </div>
+      )}
 
       <div className={categoryStyles.kpiRow}>
         <KpiCard icon={Wallet} label="Current Value" value={formatInr(totalCurrent)} />
@@ -197,6 +240,8 @@ export function ProjectionsPage() {
         />
         <KpiCard icon={Percent} label="Blended CAGR" value={formatPct(blendedCagr)} />
       </div>
+
+      <ProjectionChart data={chartData} series={series} />
 
       <Card title="Category Breakdown">
         <HoldingsTable columns={columns} rows={categories} />

@@ -20,7 +20,12 @@ export function AllocationDonut({ data, showLegend = false }: { data: DonutDatum
             <Cell key={d.name} fill={d.color} stroke="none" />
           ))}
         </Pie>
-        <Tooltip formatter={(value: number) => formatInr(value)} />
+        <Tooltip
+          formatter={(value: number) => formatInr(value)}
+          contentStyle={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 10 }}
+          labelStyle={{ color: 'var(--text-h)' }}
+          itemStyle={{ color: 'var(--text-h)' }}
+        />
       </PieChart>
     </ResponsiveContainer>
   )

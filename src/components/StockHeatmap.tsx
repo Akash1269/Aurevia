@@ -8,10 +8,10 @@ export interface HeatmapDatum {
 }
 
 function heatColor(gainPct: number): string {
-  if (gainPct >= 30) return '#15803d'
-  if (gainPct >= 0) return '#22c55e'
-  if (gainPct >= -15) return '#f87171'
-  return '#b91c1c'
+  if (gainPct >= 30) return '#397b4a'
+  if (gainPct >= 0) return '#2b8746'
+  if (gainPct >= -15) return '#ad5756'
+  return '#a73c34'
 }
 
 interface CellContentProps {
@@ -80,11 +80,11 @@ function HeatmapTooltip({ active, payload, formatFull = formatInr }: HeatmapTool
   return (
     <div
       style={{
-        background: '#1a1a1e',
-        border: '1px solid var(--card-dark-border)',
+        background: 'var(--card-bg)',
+        border: '1px solid var(--border)',
         borderRadius: 10,
         padding: 'var(--space-3) var(--space-4)',
-        color: '#fff',
+        color: 'var(--text-h)',
         fontSize: 'var(--text-sm)',
       }}
     >

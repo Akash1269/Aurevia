@@ -1,10 +1,11 @@
-import { AllocationDonut, type DonutDatum } from '../components/AllocationDonut'
+import { AllocationBar } from '../components/AllocationBar'
+import { AllocationLegend } from '../components/AllocationLegend'
 import { Card } from '../components/Card'
 import { colorForIndex } from '../utils/colors'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Coins, Lock, PieChart, TrendingUp, Wallet } from 'lucide-react'
+import { Coins, Lock, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import { toInr } from '../data/portfolio'
@@ -79,20 +80,36 @@ export function FixedDepositsPage() {
   if (error) return <ErrorState message={error} />
 
   const totalMaturityInr = rows.reduce((sum, r) => sum + toInr(r.maturity_value, r.currency, ratesMap), 0)
-  const donutData: DonutDatum[] = rows.map((r, i) => ({ name: r.bank_name, value: r.currentInr, color: colorForIndex(i) }))
   const totalInterestAtMaturity = totalMaturityInr - totals.investedInr
+
+  const byBank = new Map<string, number>()
+  for (const r of rows) {
+    byBank.set(r.bank_name, (byBank.get(r.bank_name) ?? 0) + r.currentInr)
+  }
+  const distribution = Array.from(byBank.entries())
+    .sort(([, a], [, b]) => b - a)
+    .map(([label, amountInr], i) => ({
+      label,
+      pct: totals.currentInr === 0 ? 0 : (amountInr / totals.currentInr) * 100,
+      amountInr,
+      color: colorForIndex(i),
+    }))
 
   return (
     <>
       <div className={styles.kpiRow}>
         <KpiCard icon={Wallet} label="Total Principal" value={formatInr(totals.investedInr)} />
-        <KpiCard icon={TrendingUp} label="Accrued Current Value" value={formatInr(totals.currentInr)} />
         <KpiCard icon={Lock} label="Total Maturity Value" value={formatInr(totalMaturityInr)} sublabel="at full term" />
         <KpiCard icon={Coins} label="Interest at Maturity" value={formatInr(totalInterestAtMaturity)} />
-      </div>
-      <div className={styles.chartRow}>
-        <Card icon={PieChart} title="By Bank" align="center">
-          {rows.length === 0 ? <EmptyState /> : <AllocationDonut data={donutData} />}
+        <Card>
+          {rows.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <>
+              <AllocationBar segments={distribution} />
+              <AllocationLegend entries={distribution} />
+            </>
+          )}
         </Card>
       </div>
       <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>

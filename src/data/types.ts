@@ -9,7 +9,7 @@ export interface DataManifest {
   savings: string
   fixedDeposits: string
   pf: string
-  pfContributions: string
+  pfStatements: string
 }
 
 export interface UsStockRow {
@@ -63,17 +63,23 @@ export interface FixedDepositRow {
   currency: CurrencyCode
 }
 
-export interface PfContributionRawRow {
+export type PfEntryType = 'Contribution' | 'Interest'
+
+export interface PfStatementRawRow {
   company: string
   month: string
+  transaction_date: string
+  type: PfEntryType
   employee: number
   employer: number
-  pension: number
-  total: number
+  pension: number | null
+  notes: string | null
 }
 
-export interface PfContributionRow extends PfContributionRawRow {
+export interface PfStatementRow extends Omit<PfStatementRawRow, 'notes'> {
   displayName: string
+  total: number
+  notes: string
 }
 
 export interface PfAccountSummaryRawRow {

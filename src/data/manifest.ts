@@ -11,7 +11,7 @@ export const DEFAULT_MANIFEST: DataManifest = {
   savings: '/data/savings-accounts.csv',
   fixedDeposits: '/data/fixed-deposits.csv',
   pf: '/data/PF/account-summary.csv',
-  pfContributions: '/data/PF/contributions.csv',
+  pfStatements: '/data/PF/statements.csv',
 }
 
 export async function loadManifest(): Promise<DataManifest> {

@@ -7,5 +7,5 @@
   "savings": "/data/savings-accounts.csv",
   "fixedDeposits": "/data/fixed-deposits.csv",
   "pf": "/data/PF/account-summary.csv",
-  "pfContributions": "/data/PF/contributions.csv"
+  "pfStatements": "/data/PF/statements.csv"
 }

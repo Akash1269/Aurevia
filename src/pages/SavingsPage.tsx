@@ -1,13 +1,22 @@
+import { AllocationBar } from '../components/AllocationBar'
+import { AllocationLegend } from '../components/AllocationLegend'
 import { Card } from '../components/Card'
+import { colorForIndex } from '../utils/colors'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Calendar, Landmark, PiggyBank, Wallet } from 'lucide-react'
+import { Calendar, PiggyBank, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import type { ComputedSavings } from '../data/types'
 import { formatInr } from '../utils/format'
 import styles from './CategoryPage.module.css'
+
+const CURRENCY_SYMBOLS: Record<string, string> = { INR: '₹', USD: '$' }
+
+function currencySymbol(code: string): string {
+  return CURRENCY_SYMBOLS[code] ?? `${code} `
+}
 
 const columns: HoldingsColumn<ComputedSavings>[] = [
   {
@@ -23,7 +32,7 @@ const columns: HoldingsColumn<ComputedSavings>[] = [
     key: 'balance',
     label: 'Balance',
     align: 'right',
-    render: (r) => `${r.balance.toLocaleString('en-IN')} ${r.currency}`,
+    render: (r) => `${currencySymbol(r.currency)}${r.balance.toLocaleString('en-IN')}`,
     sortValue: (r) => r.balance,
     hideOnMobile: true,
   },
@@ -56,13 +65,31 @@ export function SavingsPage() {
 
   const estimatedAnnualInterest = totals.currentInr * (weightedRate / 100)
 
+  const distribution = [...rows]
+    .sort((a, b) => b.currentInr - a.currentInr)
+    .map((r, i) => ({
+      label: r.bank_name,
+      pct: totals.currentInr === 0 ? 0 : (r.currentInr / totals.currentInr) * 100,
+      amountInr: r.currentInr,
+      color: colorForIndex(i),
+    }))
+
   return (
     <>
       <div className={styles.kpiRow}>
         <KpiCard icon={Wallet} label="Total Balance" value={formatInr(totals.currentInr)} />
         <KpiCard icon={Calendar} label="Weighted Avg Interest Rate" value={`${weightedRate.toFixed(2)}%`} />
-        <KpiCard icon={Landmark} label="Accounts" value={String(rows.length)} />
         <KpiCard icon={PiggyBank} label="Est. Annual Interest" value={formatInr(estimatedAnnualInterest)} />
+        <Card>
+          {rows.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <>
+              <AllocationBar segments={distribution} />
+              <AllocationLegend entries={distribution} />
+            </>
+          )}
+        </Card>
       </div>
       <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
     </>

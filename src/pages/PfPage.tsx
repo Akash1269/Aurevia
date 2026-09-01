@@ -3,77 +3,91 @@ import { Card } from '../components/Card'
 import { ContributionTimelineChart, type ContributionTimelinePoint } from '../components/ContributionTimelineChart'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
-import { GainText } from '../components/GainText'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Building2, Calendar, ChevronDown, ChevronUp, History, ListChecks, Shield, Wallet } from 'lucide-react'
+import { Building2, Calendar, Filter, History, ListChecks, ListFilter, Shield, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
+import { MultiSelectDropdown } from '../components/MultiSelectDropdown'
 import { usePortfolioData } from '../context/PortfolioDataContext'
-import type { ComputedPf, PfContributionRow } from '../data/types'
+import type { PfEntryType, PfStatementRow } from '../data/types'
 import primitives from '../styles/primitives.module.css'
-import { formatInr, formatMonth, formatSignedInr, monthSortKey } from '../utils/format'
-import styles from './CategoryPage.module.css'
+import { formatInr, formatMonth, monthSortKey } from '../utils/format'
+import categoryStyles from './CategoryPage.module.css'
+import styles from './PfPage.module.css'
 
-const accountSummaryColumns: HoldingsColumn<ComputedPf>[] = [
-  {
-    key: 'member_id',
-    label: 'Member ID',
-    render: (r) => r.member_id,
-    sortValue: (r) => r.member_id,
-    truncate: '120px',
-    title: (r) => r.member_id,
-  },
+const ALL_COMPANIES = 'All'
+const ENTRY_TYPE_OPTIONS: { value: PfEntryType; label: string }[] = [
+  { value: 'Contribution', label: 'Contribution' },
+  { value: 'Interest', label: 'Interest' },
+]
+
+interface PfCompanySummary {
+  displayName: string
+  company: string
+  fromYear: number
+  toYear: number
+  employee: number
+  employer: number
+  interestEarned: number
+  total: number
+}
+
+// Account Summary is built entirely from statements.csv now (not
+// account-summary.csv). That ledger has no transfer/withdrawal transactions,
+// so Member ID, Current Balance, Adjustments, Transfer-In, and Withdrawal
+// have no honest source here and are left out rather than faked - summing
+// contributions alone would show closed accounts (money since transferred
+// to a later employer) as still holding a large positive balance.
+function buildAccountSummary(rows: PfStatementRow[]): PfCompanySummary[] {
+  const map = new Map<string, Omit<PfCompanySummary, 'total'>>()
+  for (const row of rows) {
+    const year = Number(row.transaction_date.split('/')[2]) || 0
+    const existing = map.get(row.company) ?? {
+      displayName: row.company,
+      company: row.company,
+      fromYear: year,
+      toYear: year,
+      employee: 0,
+      employer: 0,
+      interestEarned: 0,
+    }
+    existing.fromYear = Math.min(existing.fromYear, year)
+    existing.toYear = Math.max(existing.toYear, year)
+    if (row.type === 'Contribution') {
+      existing.employee += row.employee
+      existing.employer += row.employer
+    } else {
+      existing.interestEarned += row.total
+    }
+    map.set(row.company, existing)
+  }
+  return Array.from(map.values())
+    .map((r) => ({ ...r, total: r.employee + r.employer + r.interestEarned }))
+    .sort((a, b) => a.company.localeCompare(b.company))
+}
+
+const accountSummaryColumns: HoldingsColumn<PfCompanySummary>[] = [
   {
     key: 'company',
     label: 'Company',
     render: (r) => r.company,
     sortValue: (r) => r.company,
-    truncate: '110px',
+    truncate: '140px',
     title: (r) => r.company,
   },
-  { key: 'years', label: 'Years', render: (r) => `${r.from_year}–${r.to_year}`, sortValue: (r) => r.from_year, hideOnMobile: true },
-  {
-    key: 'current_balance',
-    label: 'Current Balance',
-    align: 'right',
-    render: (r) => formatInr(r.current_balance),
-    sortValue: (r) => r.current_balance,
-  },
-  {
-    key: 'adjustments',
-    label: 'Adjustments',
-    align: 'right',
-    render: (r) => <GainText value={r.adjustments}>{formatSignedInr(r.adjustments)}</GainText>,
-    sortValue: (r) => r.adjustments,
-    hideOnMobile: true,
-  },
+  { key: 'years', label: 'Years', render: (r) => `${r.fromYear}–${r.toYear}`, sortValue: (r) => r.fromYear },
   { key: 'employee', label: 'Employee', align: 'right', render: (r) => formatInr(r.employee), sortValue: (r) => r.employee },
   { key: 'employer', label: 'Employer', align: 'right', render: (r) => formatInr(r.employer), sortValue: (r) => r.employer },
   {
     key: 'interest_earned',
     label: 'Interest Earned',
     align: 'right',
-    render: (r) => formatInr(r.interest_earned),
-    sortValue: (r) => r.interest_earned,
+    render: (r) => formatInr(r.interestEarned),
+    sortValue: (r) => r.interestEarned,
   },
-  {
-    key: 'transfer_in',
-    label: 'Transfer-In',
-    align: 'right',
-    render: (r) => formatInr(r.transfer_in),
-    sortValue: (r) => r.transfer_in,
-    hideOnMobile: true,
-  },
-  {
-    key: 'withdrawal',
-    label: 'Withdrawal',
-    align: 'right',
-    render: (r) => formatInr(r.withdrawal),
-    sortValue: (r) => r.withdrawal,
-    hideOnMobile: true,
-  },
+  { key: 'total', label: 'Total', align: 'right', render: (r) => formatInr(r.total), sortValue: (r) => r.total },
 ]
 
-const contributionColumns: HoldingsColumn<PfContributionRow>[] = [
+const statementColumns: HoldingsColumn<PfStatementRow>[] = [
   {
     key: 'company',
     label: 'Company',
@@ -83,13 +97,42 @@ const contributionColumns: HoldingsColumn<PfContributionRow>[] = [
     title: (r) => r.company,
   },
   { key: 'month', label: 'Month', render: (r) => formatMonth(r.month), sortValue: (r) => monthSortKey(r.month) },
+  {
+    key: 'transaction_date',
+    label: 'Transaction Date',
+    render: (r) => r.transaction_date,
+    sortValue: (r) => monthSortKey(r.transaction_date),
+    hideOnMobile: true,
+  },
+  {
+    key: 'type',
+    label: 'Type',
+    render: (r) => (r.type === 'Interest' ? <span className={primitives.badge}>{r.type}</span> : r.type),
+    sortValue: (r) => r.type,
+  },
   { key: 'employee', label: 'Employee', align: 'right', render: (r) => formatInr(r.employee), sortValue: (r) => r.employee },
   { key: 'employer', label: 'Employer', align: 'right', render: (r) => formatInr(r.employer), sortValue: (r) => r.employer },
-  { key: 'pension', label: 'Pension', align: 'right', render: (r) => formatInr(r.pension), sortValue: (r) => r.pension },
+  {
+    key: 'pension',
+    label: 'Pension',
+    align: 'right',
+    render: (r) => (r.pension === null ? '—' : formatInr(r.pension)),
+    sortValue: (r) => r.pension ?? 0,
+    hideOnMobile: true,
+  },
   { key: 'total', label: 'Total', align: 'right', render: (r) => formatInr(r.total), sortValue: (r) => r.total },
+  {
+    key: 'notes',
+    label: 'Notes',
+    render: (r) => r.notes || '—',
+    sortValue: (r) => r.notes,
+    truncate: '180px',
+    title: (r) => r.notes,
+    hideOnMobile: true,
+  },
 ]
 
-function buildContributionTimeline(rows: PfContributionRow[]): ContributionTimelinePoint[] {
+function buildTimeline(rows: PfStatementRow[]): ContributionTimelinePoint[] {
   const byMonth = new Map<string, number>()
   for (const row of rows) {
     byMonth.set(row.month, (byMonth.get(row.month) ?? 0) + row.total)
@@ -106,26 +149,39 @@ function buildContributionTimeline(rows: PfContributionRow[]): ContributionTimel
 }
 
 export function PfPage() {
-  const { results, pfContributions } = usePortfolioData()
-  const { rows, totals, error } = results.pf
-  const [historyOpen, setHistoryOpen] = useState(false)
+  const { results, pfStatements } = usePortfolioData()
+  const { error } = results.pf
+  const [companyFilter, setCompanyFilter] = useState(ALL_COMPANIES)
+  const [typeFilter, setTypeFilter] = useState<Set<string>>(() => new Set(ENTRY_TYPE_OPTIONS.map((o) => o.value)))
 
   if (error) return <ErrorState message={error} />
 
-  const totalContributions = rows.reduce((sum, r) => sum + r.employee + r.employer, 0)
-  const totalInterestEarned = rows.reduce((sum, r) => sum + r.interest_earned, 0)
+  const accountSummary = buildAccountSummary(pfStatements.rows)
 
-  const contributionRows = [...pfContributions.rows].sort(
-    (a, b) => monthSortKey(a.month) - monthSortKey(b.month) || a.company.localeCompare(b.company),
+  const totalContributions = accountSummary.reduce((sum, r) => sum + r.employee + r.employer, 0)
+  const totalInterestEarned = accountSummary.reduce((sum, r) => sum + r.interestEarned, 0)
+  const totalAccountBalance = totalContributions + totalInterestEarned
+
+  const statements = [...pfStatements.rows].sort(
+    (a, b) =>
+      monthSortKey(a.transaction_date) - monthSortKey(b.transaction_date) ||
+      a.company.localeCompare(b.company) ||
+      a.type.localeCompare(b.type),
   )
 
-  const timeline = buildContributionTimeline(contributionRows)
+  const timeline = buildTimeline(statements.filter((r) => r.type === 'Contribution'))
+  const interestTimeline = buildTimeline(statements.filter((r) => r.type === 'Interest'))
 
-  const contributionTotals = contributionRows.reduce(
+  const companies = Array.from(new Set(statements.map((r) => r.company))).sort()
+  const filteredStatements = statements.filter(
+    (r) => (companyFilter === ALL_COMPANIES || r.company === companyFilter) && typeFilter.has(r.type),
+  )
+
+  const statementTotals = filteredStatements.reduce(
     (acc, r) => ({
       employee: acc.employee + r.employee,
       employer: acc.employer + r.employer,
-      pension: acc.pension + r.pension,
+      pension: acc.pension + (r.pension ?? 0),
       total: acc.total + r.total,
     }),
     { employee: 0, employer: 0, pension: 0, total: 0 },
@@ -133,8 +189,13 @@ export function PfPage() {
 
   return (
     <>
-      <div className={styles.kpiRow}>
-        <KpiCard icon={Shield} label="Total Balance" value={formatInr(totals.currentInr)} />
+      <div className={categoryStyles.kpiRow}>
+        <KpiCard
+          icon={Shield}
+          label="Total Balance"
+          value={formatInr(totalAccountBalance)}
+          sublabel="contributions + interest"
+        />
         <KpiCard
           icon={Wallet}
           label="Total Contributions"
@@ -142,49 +203,76 @@ export function PfPage() {
           sublabel="employee + employer, lifetime"
         />
         <KpiCard icon={Calendar} label="Total Interest Earned" value={formatInr(totalInterestEarned)} />
-        <KpiCard icon={Building2} label="Accounts" value={String(rows.length)} />
+        <KpiCard icon={Building2} label="Accounts" value={String(accountSummary.length)} />
       </div>
       <Card icon={ListChecks} title="Account Summary">
-        {rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={accountSummaryColumns} rows={rows} />}
+        {accountSummary.length === 0 ? <EmptyState /> : <HoldingsTable columns={accountSummaryColumns} rows={accountSummary} />}
       </Card>
       {timeline.length > 0 && <ContributionTimelineChart data={timeline} />}
-      {pfContributions.error ? (
-        <ErrorState message={pfContributions.error} />
-      ) : contributionRows.length === 0 ? (
+      {interestTimeline.length > 0 && (
+        <ContributionTimelineChart
+          data={interestTimeline}
+          title="Interest Credited Over Time"
+          barName="Interest Credited"
+          lineName="Cumulative Interest"
+        />
+      )}
+      {pfStatements.error ? (
+        <ErrorState message={pfStatements.error} />
+      ) : statements.length === 0 ? (
         <EmptyState />
       ) : (
-        <>
-          <button
-            type="button"
-            className={styles.sectionToggle}
-            onClick={() => setHistoryOpen((open) => !open)}
-            aria-expanded={historyOpen}
-          >
-            <span className={primitives.cardTitle}>
-              <History width={16} height={16} />
-              <span>Monthly Contribution History</span>
-            </span>
-            <span className={styles.sectionToggleRight}>
-              <span className={primitives.mutedText}>{contributionRows.length} months</span>
-              {historyOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </span>
-          </button>
-          {historyOpen && (
-            <Card>
-              <HoldingsTable
-                columns={contributionColumns}
-                rows={contributionRows}
-                footer={{
-                  company: 'Total',
-                  employee: formatInr(contributionTotals.employee),
-                  employer: formatInr(contributionTotals.employer),
-                  pension: formatInr(contributionTotals.pension),
-                  total: formatInr(contributionTotals.total),
-                }}
+        <Card
+          icon={History}
+          title="Contribution & Interest History"
+          actions={<span className={primitives.mutedText}>{filteredStatements.length} entries</span>}
+        >
+          <div className={styles.filterRow}>
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel} htmlFor="pf-company-filter">
+                <Filter size={14} />
+                Company
+              </label>
+              <select
+                id="pf-company-filter"
+                className={styles.select}
+                value={companyFilter}
+                onChange={(e) => setCompanyFilter(e.target.value)}
+              >
+                <option value={ALL_COMPANIES}>All Companies</option>
+                {companies.map((company) => (
+                  <option key={company} value={company}>
+                    {company}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.filterGroup}>
+              <span className={styles.filterLabel}>
+                <ListFilter size={14} />
+                Type
+              </span>
+              <MultiSelectDropdown
+                options={ENTRY_TYPE_OPTIONS}
+                selected={typeFilter}
+                onChange={setTypeFilter}
+                allLabel="All Types"
+                noneLabel="No types selected"
               />
-            </Card>
-          )}
-        </>
+            </div>
+          </div>
+          <HoldingsTable
+            columns={statementColumns}
+            rows={filteredStatements}
+            footer={{
+              company: 'Total',
+              employee: formatInr(statementTotals.employee),
+              employer: formatInr(statementTotals.employer),
+              pension: formatInr(statementTotals.pension),
+              total: formatInr(statementTotals.total),
+            }}
+          />
+        </Card>
       )}
     </>
   )

@@ -1,7 +1,7 @@
 .title {
   font-size: var(--text-md);
   font-weight: 500;
-  color: var(--card-dark-text);
+  color: var(--text-h);
 }
 
 .card {
