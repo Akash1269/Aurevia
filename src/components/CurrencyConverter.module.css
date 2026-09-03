@@ -1,31 +1,121 @@
-.row {
+.layout {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  gap: var(--space-6);
+  align-items: stretch;
+}
+
+.inputsArea {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  align-items: flex-end;
+  gap: var(--space-4);
   flex-wrap: wrap;
+  min-width: 0;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 280px;
+}
+
+.fieldLabel {
+  font-size: var(--text-xs);
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.inputGroup {
+  display: flex;
+  gap: var(--space-3);
 }
 
 .amountStepper {
   flex: 1;
-  min-width: 110px;
+  min-width: 0;
 }
 
 .select {
+  flex: 1;
+  min-width: 0;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
 }
 
-.arrow {
+.swapButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--bg);
   color: var(--text);
+  cursor: pointer;
 }
 
-.resultRow {
-  margin-top: var(--space-6);
+.swapButton:hover {
+  color: var(--text-h);
+}
+
+.rateArea {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding-left: var(--space-6);
+  border-left: 1px solid var(--border);
+}
+
+.defaultCurrency {
+  font-size: var(--text-sm);
+  color: var(--text);
+  margin-bottom: var(--space-2);
+}
+
+.rateLabel {
+  font-size: var(--text-xs);
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.rateValue {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rateArea {
+    padding-left: 0;
+    padding-top: var(--space-4);
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 560px) {
+  .inputsArea {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .swapButton {
+    align-self: center;
+  }
 }

@@ -6,14 +6,6 @@
   min-width: 0;
 }
 
-.body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
-  gap: var(--space-4);
-  align-items: start;
-  min-width: 0;
-}
-
 .chartRow {
   display: grid;
   grid-template-columns: minmax(240px, 340px);
@@ -44,9 +36,6 @@
 }
 
 @media (max-width: 900px) {
-  .body {
-    grid-template-columns: minmax(0, 1fr);
-  }
   .insightsRow {
     grid-template-columns: minmax(0, 1fr);
   }

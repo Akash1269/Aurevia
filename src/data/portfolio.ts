@@ -44,10 +44,6 @@ export const CATEGORY_META: CategoryMetaEntry[] = [
   { key: 'pf', label: 'India PF', color: 'var(--alloc-7)' },
 ]
 
-// CSV cells are often hand-padded with spaces for column alignment; a blank
-// numeric cell then parses as a whitespace string rather than null, and
-// `?? 0` doesn't catch that. Normalize defensively so stray padding can't
-// silently turn a total into NaN.
 function toNullableNumber(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) ? value : null
 }
@@ -100,9 +96,6 @@ export function fromInr(amountInr: number, currencyCode: string, ratesMap: Rates
   return rate ? amountInr / rate : amountInr
 }
 
-// Converts an INR-pivoted amount (every category's totals.*Inr) into the
-// user's chosen display currency and formats it - the one call KPI cards
-// need regardless of which currency a holding is natively denominated in.
 export function formatDisplayAmount(amountInr: number, currencyCode: string, ratesMap: RatesMap): string {
   return formatByCurrency(fromInr(amountInr, currencyCode, ratesMap), currencyCode)
 }
@@ -268,12 +261,6 @@ export function computeFixedDeposits(
   return { rows: computed, totals: sumTotals(computed), error: null }
 }
 
-// The PF page's Account Summary table and every PF figure elsewhere
-// (Overview, Top Holdings, Currency Exposure) both read from this: one row
-// per company, aggregated straight from the pf.csv ledger.
-// Contribution rows count employee+employer (pension goes to the separate
-// EPS pension pot, not the withdrawable PF corpus); interest rows count in
-// full.
 export function buildPfAccountSummary(rows: PfStatementRow[]): PfCompanySummary[] {
   const map = new Map<string, Omit<PfCompanySummary, 'total' | 'displayName'>>()
   for (const row of rows) {

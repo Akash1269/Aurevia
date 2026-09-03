@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { loadCsv } from '../data/loadCsv'
+import { fetchLiveRates } from '../data/liveRates'
 import { loadManifest } from '../data/manifest'
 import {
   buildOverview,
@@ -54,9 +55,15 @@ function fromSettledRaw<TRow, TDecorated>(
   return { rows: [], error: message }
 }
 
+export interface RatesInfo {
+  source: 'live' | 'csv'
+  asOf: string | null
+}
+
 interface PortfolioDataValue {
   loading: boolean
   ratesMap: RatesMap
+  ratesInfo: RatesInfo
   results: PortfolioResults
   overview: Overview
   topHoldings: TopHolding[]
@@ -100,6 +107,7 @@ const PortfolioDataContext = createContext<PortfolioDataValue | null>(null)
 
 export function PortfolioDataProvider({ children }: { children: ReactNode }) {
   const [ratesMap, setRatesMap] = useState<RatesMap>({ INR: 1 })
+  const [ratesInfo, setRatesInfo] = useState<RatesInfo>({ source: 'csv', asOf: null })
   const [results, setResults] = useState<PortfolioResults>(emptyResults)
   const [pfStatements, setPfStatements] = useState<SupplementalState<PfStatementRow>>(emptySupplemental)
   const [loading, setLoading] = useState(true)
@@ -112,7 +120,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       const manifest = await loadManifest()
       if (cancelled) return
 
-      const [ratesRes, usStocksRes, indiaStocksRes, mutualFundsRes, esopsRes, savingsRes, fixedDepositsRes, pfStatementsRes] =
+      const [ratesRes, usStocksRes, indiaStocksRes, mutualFundsRes, esopsRes, savingsRes, fixedDepositsRes, pfStatementsRes, liveRatesRes] =
         await Promise.allSettled([
           loadCsv<CurrencyRateRow>(manifest.currencyRates),
           loadCsv<UsStockRow>(manifest.usStocks),
@@ -122,12 +130,25 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
           loadCsv<SavingsRow>(manifest.savings),
           loadCsv<FixedDepositRow>(manifest.fixedDeposits),
           loadCsv<PfStatementRawRow>(manifest.pfStatements),
+          fetchLiveRates(),
         ])
 
       if (cancelled) return
 
-      const rates = ratesRes.status === 'fulfilled' ? ratesToMap(ratesRes.value) : { INR: 1 }
+      // Live rates (Frankfurter, ECB-sourced) take priority; the CSV is only
+      // a fallback for when the API is unreachable, so the app keeps working
+      // offline or if the third party has an outage.
+      let rates: RatesMap
+      let info: RatesInfo
+      if (liveRatesRes.status === 'fulfilled') {
+        rates = liveRatesRes.value.ratesMap
+        info = { source: 'live', asOf: liveRatesRes.value.asOf }
+      } else {
+        rates = ratesRes.status === 'fulfilled' ? ratesToMap(ratesRes.value) : { INR: 1 }
+        info = { source: 'csv', asOf: null }
+      }
       setRatesMap(rates)
+      setRatesInfo(info)
 
       const statementsState = fromSettledRaw(pfStatementsRes, decoratePfStatements)
 
@@ -165,6 +186,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     () => ({
       loading,
       ratesMap,
+      ratesInfo,
       results,
       overview,
       topHoldings,
@@ -172,7 +194,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       pfStatements,
       refresh,
     }),
-    [loading, ratesMap, results, overview, topHoldings, currencyExposure, pfStatements, refresh],
+    [loading, ratesMap, ratesInfo, results, overview, topHoldings, currencyExposure, pfStatements, refresh],
   )
 
   return <PortfolioDataContext.Provider value={value}>{children}</PortfolioDataContext.Provider>
