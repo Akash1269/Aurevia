@@ -50,3 +50,52 @@
 .tabCheckbox {
   accent-color: var(--text-h);
 }
+
+.dataSourceActions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.folderSectionDisabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.fileStatus {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.fileStatusLabel {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: var(--space-2);
+}
+
+.fileChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.fileChipMatched,
+.fileChipBundled {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  font-size: var(--text-xs);
+}
+
+.fileChipMatched {
+  color: var(--text-h);
+  border-color: var(--text-h);
+}
+
+.fileChipBundled {
+  color: var(--text);
+}

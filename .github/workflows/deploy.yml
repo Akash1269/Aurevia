@@ -27,9 +27,6 @@ jobs:
 
       - run: npm ci
 
-      - name: Use sample data for the deployed demo
-        run: cp -r sample-data/. public/data/
-
       - run: npm run build
 
       - name: Add SPA fallback for client-side routing

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { SettingsContext } from './SettingsContext'
+import { isSampleDataEnabled, SAMPLE_DATA_KEY, SettingsContext } from './SettingsContext'
 
 const CURRENCY_KEY = 'settings.displayCurrency'
 const HIDDEN_TABS_KEY = 'settings.hiddenTabs'
@@ -16,6 +16,7 @@ function getInitialHiddenTabs(): Set<string> {
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [displayCurrency, setDisplayCurrency] = useState(() => localStorage.getItem(CURRENCY_KEY) ?? 'INR')
   const [hiddenTabs, setHiddenTabs] = useState<Set<string>>(getInitialHiddenTabs)
+  const [useSampleData, setUseSampleData] = useState(isSampleDataEnabled)
 
   useEffect(() => {
     localStorage.setItem(CURRENCY_KEY, displayCurrency)
@@ -24,6 +25,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(HIDDEN_TABS_KEY, JSON.stringify(Array.from(hiddenTabs)))
   }, [hiddenTabs])
+
+  useEffect(() => {
+    localStorage.setItem(SAMPLE_DATA_KEY, String(useSampleData))
+  }, [useSampleData])
 
   function setTabHidden(to: string, hidden: boolean) {
     setHiddenTabs((prev) => {
@@ -35,7 +40,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SettingsContext.Provider value={{ displayCurrency, setDisplayCurrency, hiddenTabs, setTabHidden }}>
+    <SettingsContext.Provider
+      value={{ displayCurrency, setDisplayCurrency, hiddenTabs, setTabHidden, useSampleData, setUseSampleData }}
+    >
       {children}
     </SettingsContext.Provider>
   )
