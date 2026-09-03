@@ -92,7 +92,12 @@ export function SavingsPage() {
           value={formatDisplayAmount(totals.currentInr, displayCurrency, ratesMap)}
           sublabel={formatDisplayAmount(totals.currentInr, altCurrency, ratesMap)}
         />
-        <KpiCard icon={Calendar} label="Weighted Avg Interest Rate" value={`${weightedRate.toFixed(2)}%`} />
+        <KpiCard
+          icon={Calendar}
+          label="Weighted Avg Interest Rate"
+          value={`${weightedRate.toFixed(2)}%`}
+          sublabel={`across ${rows.length} account${rows.length === 1 ? '' : 's'}`}
+        />
         <KpiCard
           icon={PiggyBank}
           label="Est. Annual Interest"

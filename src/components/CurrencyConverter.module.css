@@ -41,12 +41,12 @@
 .select {
   flex: 1;
   min-width: 0;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text-h);
-  font-size: var(--text-sm);
+}
+
+.select select {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+  font-size: var(--text-md);
 }
 
 .swapButton {

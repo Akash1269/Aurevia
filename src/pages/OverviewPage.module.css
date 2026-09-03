@@ -6,16 +6,23 @@
   min-width: 0;
 }
 
-.portfolioRow {
+.mainRow {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
   gap: var(--space-4);
   align-items: start;
   min-width: 0;
 }
 
+.stackedColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
 .allocationSection {
-  margin-top: var(--space-6);
+  margin-top: var(--space-4);
 }
 
 .portfolioTotal {
@@ -23,20 +30,6 @@
   font-weight: 600;
   color: var(--text-h);
   margin: var(--space-2) 0 var(--space-1);
-}
-
-.bottomRow {
-  display: grid;
-  grid-template-columns: minmax(220px, 300px) repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-  align-items: start;
-  min-width: 0;
-}
-
-.exposureList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
 }
 
 .holdingsScroll {
@@ -48,97 +41,63 @@
 }
 
 .holdingCard {
-  flex: 0 0 130px;
+  flex: 0 0 160px;
+  min-width: 0;
   background: var(--card-dark-bg);
   color: var(--card-dark-text);
   border-radius: var(--radius-sm);
   padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-1);
 }
 
 .holdingName {
   font-size: var(--text-2xs);
   color: var(--card-dark-muted);
+  margin-bottom: var(--space-2);
+}
+
+.holdingTitle {
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .holdingValue {
   font-size: var(--text-lg);
   font-weight: 600;
+  margin-bottom: var(--space-4);
 }
 
-.gainTrack {
+.shareTrack {
   height: 4px;
   border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
 }
 
-.gainFill {
+.shareFill {
   height: 100%;
   background: #ffffff;
 }
 
-.exposureRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  font-size: var(--text-sm);
-  color: var(--text-h);
-  min-width: 0;
-}
-
-.exposureLeft {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  white-space: nowrap;
-}
-
-.exposureIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--bg);
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.exposureBarTrack {
-  flex: 1;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: var(--border);
-  overflow: hidden;
-}
-
-.exposureBarFill {
-  display: block;
-  height: 100%;
-  background: var(--text-h);
-}
-
 @media (max-width: 1100px) {
-  .topRow,
-  .bottomRow {
+  .topRow {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 900px) {
-  .portfolioRow {
+  .mainRow {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 720px) {
-  .topRow,
-  .bottomRow {
-    grid-template-columns: minmax(0, 1fr);
+  .topRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
   }
 }

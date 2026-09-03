@@ -4,6 +4,7 @@ import { Card } from './Card'
 import { useSettings } from '../context/SettingsContext'
 import { toInr } from '../data/portfolio'
 import { NumberStepper } from './NumberStepper'
+import { Select } from './Select'
 import type { RatesMap } from '../data/types'
 import { currencyLabel, currencyNameFor, currencySymbolFor } from '../utils/currencyInfo'
 import styles from './CurrencyConverter.module.css'
@@ -59,13 +60,13 @@ export function CurrencyConverter({ ratesMap }: { ratesMap: RatesMap }) {
                 }}
                 aria-label="From amount"
               />
-              <select className={styles.select} value={from} onChange={(e) => setFrom(e.target.value)}>
+              <Select className={styles.select} value={from} onChange={(e) => setFrom(e.target.value)}>
                 {codes.map((code) => (
                   <option key={code} value={code}>
                     {currencyLabel(code)}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
 
@@ -95,13 +96,13 @@ export function CurrencyConverter({ ratesMap }: { ratesMap: RatesMap }) {
                 }}
                 aria-label="To amount"
               />
-              <select className={styles.select} value={to} onChange={(e) => setTo(e.target.value)}>
+              <Select className={styles.select} value={to} onChange={(e) => setTo(e.target.value)}>
                 {codes.map((code) => (
                   <option key={code} value={code}>
                     {currencyLabel(code)}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
         </div>

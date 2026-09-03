@@ -100,7 +100,12 @@ export function MutualFundsPage() {
           badgeTone={totals.gainPct}
           sublabel={formatDisplayAmount(totals.gainInr, altCurrency, ratesMap)}
         />
-        <KpiCard icon={Layers} label="Number of Funds" value={String(rows.length)} />
+        <KpiCard
+          icon={Layers}
+          label="Number of Funds"
+          value={String(rows.length)}
+          sublabel={`${rows.filter((r) => r.gainPct > 0).length} up · ${rows.filter((r) => r.gainPct < 0).length} down`}
+        />
       </div>
       <Card>
         {rows.length === 0 ? (

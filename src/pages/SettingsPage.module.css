@@ -5,15 +5,6 @@
   max-width: 480px;
 }
 
-.select {
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text-h);
-  font-size: var(--text-sm);
-}
-
 .tabPills {
   display: flex;
   flex-wrap: wrap;
@@ -54,11 +45,6 @@
 .dataSourceActions {
   display: flex;
   gap: var(--space-2);
-}
-
-.folderSectionDisabled {
-  opacity: 0.5;
-  pointer-events: none;
 }
 
 .fileStatus {

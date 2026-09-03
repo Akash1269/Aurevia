@@ -85,19 +85,6 @@
 
 @media (max-width: 720px) {
   .sidebar {
-    margin: var(--space-3);
-    padding: var(--space-4) var(--space-2);
-    height: calc(100% - var(--space-3) * 2);
-  }
-
-  .navLabel,
-  .logoText {
     display: none;
-  }
-
-  .navItem,
-  .gear {
-    justify-content: center;
-    width: auto;
   }
 }

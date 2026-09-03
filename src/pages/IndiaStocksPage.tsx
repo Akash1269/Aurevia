@@ -122,7 +122,12 @@ export function IndiaStocksPage() {
           badgeTone={totals.gainPct}
           sublabel={formatDisplayAmount(totals.gainInr, altCurrency, ratesMap)}
         />
-        <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
+        <KpiCard
+          icon={ListChecks}
+          label="Holdings"
+          value={String(rows.length)}
+          sublabel={`${rows.filter((r) => r.gainPct > 0).length} up · ${rows.filter((r) => r.gainPct < 0).length} down`}
+        />
       </div>
 
       <div className={styles.insightsRow}>

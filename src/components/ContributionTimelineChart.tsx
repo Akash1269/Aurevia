@@ -66,15 +66,16 @@ export function ContributionTimelineChart({
             formatter={(value: number) => formatInr(value)}
           />
           <Legend wrapperStyle={legendStyle} />
-          <Bar yAxisId="left" dataKey="total" name={barName} fill="var(--text)" radius={[3, 3, 0, 0]} />
+          <Bar yAxisId="left" dataKey="total" name={barName} fill="var(--alloc-4)" radius={[3, 3, 0, 0]} />
           <Line
             yAxisId="right"
             type="monotone"
             dataKey="runningTotal"
             name={lineName}
-            stroke="var(--text-h)"
-            strokeWidth={2}
-            dot={false}
+            stroke="var(--alloc-1)"
+            strokeWidth={5}
+            dot={{ r: 5, strokeWidth: 3, stroke: 'var(--alloc-1)', fill: 'var(--card-bg)' }}
+            activeDot={{ r: 6, strokeWidth: 3, stroke: 'var(--alloc-1)', fill: 'var(--card-bg)' }}
           />
         </ComposedChart>
       </ResponsiveContainer>

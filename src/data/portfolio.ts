@@ -335,7 +335,7 @@ export function buildOverview(results: PortfolioResults): Overview {
   }
 }
 
-export function getTopHoldings(results: PortfolioResults, n = 6): TopHolding[] {
+export function getTopHoldings(results: PortfolioResults, n = 5): TopHolding[] {
   const resultsByKey = results as unknown as Record<
     string,
     CategoryResult<{ displayName: string; currentInr: number; gainPct: number }>

@@ -14,6 +14,7 @@ interface MultiSelectDropdownProps {
   onChange: (next: Set<string>) => void
   allLabel?: string
   noneLabel?: string
+  ariaLabel?: string
 }
 
 export function MultiSelectDropdown({
@@ -23,6 +24,7 @@ export function MultiSelectDropdown({
   onChange,
   allLabel = 'All',
   noneLabel = 'None',
+  ariaLabel,
 }: MultiSelectDropdownProps) {
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -57,7 +59,13 @@ export function MultiSelectDropdown({
 
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
-      <button type="button" className={styles.trigger} onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+      <button
+        type="button"
+        className={styles.trigger}
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-label={ariaLabel}
+      >
         {Icon && <Icon width={14} height={14} />}
         {summary}
         <ChevronDown size={14} className={styles.chevron} />

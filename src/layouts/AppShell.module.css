@@ -17,16 +17,37 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
 }
 
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  font-size: var(--text-xs);
+  text-align: center;
+}
+
+.footer svg {
+  flex-shrink: 0;
+}
+
 @media (max-width: 720px) {
   .shell {
-    grid-template-columns: 56px 1fr;
+    grid-template-columns: 1fr;
   }
   .main {
     padding: var(--space-2) var(--space-4);
+  }
+
+  .footer {
+    text-align: left;
   }
 }

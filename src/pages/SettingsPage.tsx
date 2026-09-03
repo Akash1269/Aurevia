@@ -1,6 +1,7 @@
 import { Coins, Eye, FolderUp, Palette } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Card } from '../components/Card'
+import { Select } from '../components/Select'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import { useSettings } from '../context/SettingsContext'
 import {
@@ -120,11 +121,13 @@ export function SettingsPage() {
         <p className={styles.description}>
           {useSampleData
             ? 'Showing fake demo data so you can explore the app without any setup - none of it is real. Switch to "My Data" to read your own CSVs.'
-            : 'Reading your real data.'}
+            : folderStatus?.permission === 'granted'
+              ? `Reading your real data from "${folderStatus.name}".`
+              : 'Reading your real data.'}
         </p>
 
-        <div className={useSampleData ? styles.folderSectionDisabled : undefined}>
-          {!supported ? (
+        {!useSampleData &&
+          (!supported ? (
             <p className={styles.description}>
               Reading CSVs from a local folder needs the File System Access API, which Chrome and Edge support but
               Firefox and Safari don't. iPot is reading the bundled data in this browser.
@@ -132,12 +135,7 @@ export function SettingsPage() {
           ) : (
             <>
               <div className={styles.dataSourceActions}>
-                <button
-                  type="button"
-                  className={primitives.pillButton}
-                  onClick={handleChooseFolder}
-                  disabled={useSampleData}
-                >
+                <button type="button" className={primitives.pillButton} onClick={handleChooseFolder}>
                   {folderStatus ? 'Change Folder' : 'Choose Folder'}
                 </button>
                 {folderStatus && (
@@ -145,7 +143,6 @@ export function SettingsPage() {
                     type="button"
                     className={`${primitives.pillButton} ${primitives.pillButtonLight}`}
                     onClick={handleClearFolder}
-                    disabled={useSampleData}
                   >
                     Clear
                   </button>
@@ -195,37 +192,27 @@ export function SettingsPage() {
                       : `Reconnect to "${folderStatus.name}" to keep reading from it - your browser needs to reconfirm access after a restart.`}
                   </p>
                   {folderStatus.permission === 'prompt' && (
-                    <button
-                      type="button"
-                      className={primitives.pillButton}
-                      onClick={handleReconnect}
-                      disabled={useSampleData}
-                    >
+                    <button type="button" className={primitives.pillButton} onClick={handleReconnect}>
                       Reconnect
                     </button>
                   )}
                 </>
               )}
             </>
-          )}
-        </div>
+          ))}
       </Card>
 
       <Card
         icon={Coins}
         title="Display Currency"
         actions={
-          <select
-            className={styles.select}
-            value={displayCurrency}
-            onChange={(e) => setDisplayCurrency(e.target.value)}
-          >
+          <Select value={displayCurrency} onChange={(e) => setDisplayCurrency(e.target.value)}>
             {currencyOptions.map((code) => (
               <option key={code} value={code}>
                 {CURRENCY_LABELS[code] ?? code}
               </option>
             ))}
-          </select>
+          </Select>
         }
       >
         <p className={styles.description}>

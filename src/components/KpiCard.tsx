@@ -17,10 +17,10 @@ export function KpiCard({ icon: Icon, label, value, badge, badgeTone, sublabel }
 
   return (
     <div className={`${primitives.card} ${styles.card}`}>
-      <div className={styles.label}>
+      <div className={styles.iconBadge}>
         <Icon width={16} height={16} />
-        <span>{label}</span>
       </div>
+      <span className={styles.label}>{label}</span>
       <div className={styles.valueRow}>
         <span className={primitives.bigNumber}>{value}</span>
         {badge && <span className={`${primitives.badge} ${badgeToneClass}`}>{badge}</span>}

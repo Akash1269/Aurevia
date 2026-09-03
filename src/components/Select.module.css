@@ -1,0 +1,26 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+}
+
+.select {
+  width: 100%;
+  appearance: none;
+  padding: var(--space-2) 34px var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--space-4);
+  transform: translateY(-50%);
+  color: var(--text);
+  pointer-events: none;
+}

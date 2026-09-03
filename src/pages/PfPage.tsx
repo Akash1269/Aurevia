@@ -4,15 +4,15 @@ import { ContributionTimelineChart, type ContributionTimelinePoint } from '../co
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
-import { Building2, Calendar, Filter, History, ListChecks, ListFilter, Shield, Wallet } from 'lucide-react'
+import { Building2, Calendar, History, ListChecks, Shield, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { MultiSelectDropdown } from '../components/MultiSelectDropdown'
+import { Select } from '../components/Select'
 import { usePortfolioData } from '../context/PortfolioDataContext'
 import { useSearch } from '../context/SearchContext'
 import { useSettings } from '../context/SettingsContext'
 import { buildPfAccountSummary, formatDisplayAmount } from '../data/portfolio'
 import type { PfCompanySummary, PfEntryType, PfStatementRow } from '../data/types'
-import primitives from '../styles/primitives.module.css'
 import { formatInr, formatMonth, monthSortKey, otherCurrency } from '../utils/format'
 import { filterBySearch } from '../utils/search'
 import categoryStyles from './CategoryPage.module.css'
@@ -78,7 +78,7 @@ const statementColumns: HoldingsColumn<PfStatementRow>[] = [
   {
     key: 'type',
     label: 'Type',
-    render: (r) => (r.type === 'Interest' ? <span className={primitives.badge}>{r.type}</span> : r.type),
+    render: (r) => (r.type === 'Interest' ? <span className={styles.interestType}>{r.type}</span> : r.type),
     sortValue: (r) => r.type,
   },
   {
@@ -104,15 +104,6 @@ const statementColumns: HoldingsColumn<PfStatementRow>[] = [
     hideOnMobile: true,
   },
   { key: 'total', label: 'Total', align: 'right', render: (r) => formatInr(r.total), sortValue: (r) => r.total },
-  {
-    key: 'notes',
-    label: 'Notes',
-    render: (r) => r.notes || '—',
-    sortValue: (r) => r.notes,
-    truncate: '180px',
-    title: (r) => r.notes,
-    hideOnMobile: true,
-  },
 ]
 
 function buildTimeline(rows: PfStatementRow[]): ContributionTimelinePoint[] {
@@ -198,7 +189,12 @@ export function PfPage() {
           value={formatDisplayAmount(totalInterestEarned, displayCurrency, ratesMap)}
           sublabel={formatDisplayAmount(totalInterestEarned, altCurrency, ratesMap)}
         />
-        <KpiCard icon={Building2} label="Accounts" value={String(accountSummary.length)} />
+        <KpiCard
+          icon={Building2}
+          label="Accounts"
+          value={String(accountSummary.length)}
+          sublabel={accountSummary.map((a) => a.company).join(' · ')}
+        />
       </div>
       <Card icon={ListChecks} title="Account Summary">
         {accountSummary.length === 0 ? (
@@ -226,17 +222,10 @@ export function PfPage() {
         <Card
           icon={History}
           title="Contribution & Interest History"
-          actions={<span className={primitives.mutedText}>{filteredStatements.length} entries</span>}
-        >
-          <div className={styles.filterRow}>
-            <div className={styles.filterGroup}>
-              <label className={styles.filterLabel} htmlFor="pf-company-filter">
-                <Filter size={14} />
-                Company
-              </label>
-              <select
-                id="pf-company-filter"
-                className={styles.select}
+          actions={
+            <div className={styles.filterRow}>
+              <Select
+                aria-label="Filter by company"
                 value={companyFilter}
                 onChange={(e) => setCompanyFilter(e.target.value)}
               >
@@ -246,22 +235,18 @@ export function PfPage() {
                     {company}
                   </option>
                 ))}
-              </select>
-            </div>
-            <div className={styles.filterGroup}>
-              <span className={styles.filterLabel}>
-                <ListFilter size={14} />
-                Type
-              </span>
+              </Select>
               <MultiSelectDropdown
                 options={ENTRY_TYPE_OPTIONS}
                 selected={typeFilter}
                 onChange={setTypeFilter}
                 allLabel="All Types"
                 noneLabel="No types selected"
+                ariaLabel="Filter by entry type"
               />
             </div>
-          </div>
+          }
+        >
           <HoldingsTable
             columns={statementColumns}
             rows={filteredStatements}

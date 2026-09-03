@@ -229,7 +229,12 @@ export function ProjectionsPage() {
       )}
 
       <div className={categoryStyles.kpiRow}>
-        <KpiCard icon={Wallet} label="Current Value" value={formatInr(totalCurrent)} />
+        <KpiCard
+          icon={Wallet}
+          label="Current Value"
+          value={formatInr(totalCurrent)}
+          sublabel={`across ${categories.length} categories`}
+        />
         <KpiCard
           icon={TrendingUp}
           label="Projected Value"
@@ -242,8 +247,9 @@ export function ProjectionsPage() {
           value={formatSignedInr(totalGrowth)}
           badge={formatPct(totalGrowthPct)}
           badgeTone={totalGrowthPct}
+          sublabel={`over ${tenure} year${tenure === 1 ? '' : 's'}`}
         />
-        <KpiCard icon={Percent} label="Blended CAGR" value={formatPct(blendedCagr)} />
+        <KpiCard icon={Percent} label="Blended CAGR" value={formatPct(blendedCagr)} sublabel="annualized return" />
       </div>
 
       <ProjectionChart data={chartData} series={series} />
