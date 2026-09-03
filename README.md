@@ -45,6 +45,63 @@ converting it all to one display currency, so you can:
 | **Currency Converter** | A quick INR/USD (and other currency) converter using the same exchange rates the rest of the dashboard converts with. |
 | **Settings** | Switch between sample data and your own; point the app at a local folder of CSVs (via the File System Access API, in supported browsers); set display currency, theme, and which sidebar tabs are visible. |
 
+## Screenshots
+
+All captured from the [live demo](https://akash1269.github.io/Aurevia/) running on its default sample data. Click any screenshot for the full-size image.
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <a href=".github/screenshots/overview.webp"><img src=".github/screenshots/overview.webp" alt="Overview page"></a>
+      <br><sub><b>Overview</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <a href=".github/screenshots/us-stocks.webp"><img src=".github/screenshots/us-stocks.webp" alt="US Stocks page"></a>
+      <br><sub><b>US Stocks</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href=".github/screenshots/india-stocks.webp"><img src=".github/screenshots/india-stocks.webp" alt="India Stocks page"></a>
+      <br><sub><b>India Stocks</b></sub>
+    </td>
+    <td align="center">
+      <a href=".github/screenshots/mutual-funds.webp"><img src=".github/screenshots/mutual-funds.webp" alt="Mutual Funds page"></a>
+      <br><sub><b>Mutual Funds</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href=".github/screenshots/esops.webp"><img src=".github/screenshots/esops.webp" alt="ESOPs page"></a>
+      <br><sub><b>ESOPs</b></sub>
+    </td>
+    <td align="center">
+      <a href=".github/screenshots/savings.webp"><img src=".github/screenshots/savings.webp" alt="Savings Accounts page"></a>
+      <br><sub><b>Savings Accounts</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href=".github/screenshots/fixed-deposits.webp"><img src=".github/screenshots/fixed-deposits.webp" alt="Fixed Deposits page"></a>
+      <br><sub><b>Fixed Deposits</b></sub>
+    </td>
+    <td align="center">
+      <a href=".github/screenshots/pf.webp"><img src=".github/screenshots/pf.webp" alt="India PF page"></a>
+      <br><sub><b>India PF</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href=".github/screenshots/projections.webp"><img src=".github/screenshots/projections.webp" alt="Projections page"></a>
+      <br><sub><b>Projections</b></sub>
+    </td>
+    <td align="center">
+      <a href=".github/screenshots/currency-converter.webp"><img src=".github/screenshots/currency-converter.webp" alt="Currency Converter page"></a>
+      <br><sub><b>Currency Converter</b></sub>
+    </td>
+  </tr>
+</table>
+
 ## How it helps you track your finances
 
 - **One number, every currency.** Every holding — INR, USD, or otherwise —
