@@ -26,6 +26,7 @@ import type {
   TopHolding,
   UsStockRow,
 } from './types'
+import { formatByCurrency } from '../utils/format'
 
 export interface CategoryMetaEntry {
   key: string
@@ -91,6 +92,19 @@ export function ratesToMap(rows: CurrencyRateRow[]): RatesMap {
 export function toInr(amount: number, currencyCode: string, ratesMap: RatesMap): number {
   const rate = ratesMap[currencyCode] ?? 1
   return amount * rate
+}
+
+export function fromInr(amountInr: number, currencyCode: string, ratesMap: RatesMap): number {
+  if (currencyCode === 'INR') return amountInr
+  const rate = ratesMap[currencyCode]
+  return rate ? amountInr / rate : amountInr
+}
+
+// Converts an INR-pivoted amount (every category's totals.*Inr) into the
+// user's chosen display currency and formats it - the one call KPI cards
+// need regardless of which currency a holding is natively denominated in.
+export function formatDisplayAmount(amountInr: number, currencyCode: string, ratesMap: RatesMap): string {
+  return formatByCurrency(fromInr(amountInr, currencyCode, ratesMap), currencyCode)
 }
 
 function gainPctOf(invested: number, gain: number): number {

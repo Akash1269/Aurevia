@@ -8,9 +8,13 @@ import { StockHeatmap, type HeatmapDatum } from '../components/StockHeatmap'
 import { LayoutGrid, ListChecks, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
+import { useSearch } from '../context/SearchContext'
+import { useSettings } from '../context/SettingsContext'
+import { formatDisplayAmount } from '../data/portfolio'
 import type { ComputedUsStock } from '../data/types'
 import primitives from '../styles/primitives.module.css'
-import { formatCompactUsd, formatInr, formatPct, formatUsd } from '../utils/format'
+import { formatCompactUsd, formatPct, formatUsd, otherCurrency } from '../utils/format'
+import { filterBySearch } from '../utils/search'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedUsStock>[] = [
@@ -54,34 +58,37 @@ const columns: HoldingsColumn<ComputedUsStock>[] = [
 export function UsStocksPage() {
   const { results, ratesMap } = usePortfolioData()
   const { rows, totals, error } = results.usStocks
+  const { query } = useSearch()
+  const { displayCurrency } = useSettings()
 
   if (error) return <ErrorState message={error} />
 
   const heatmapData: HeatmapDatum[] = rows.map((r) => ({ name: r.symbol, size: r.current, gainPct: r.gainPct }))
-  const usdToInr = ratesMap.USD
+  const filteredRows = filterBySearch(rows, query)
+  const altCurrency = otherCurrency(displayCurrency)
 
   return (
     <>
       <div className={styles.kpiRow}>
         <KpiCard
-          icon={Wallet}
-          label="Invested"
-          value={formatUsd(totals.invested)}
-          sublabel={formatInr(totals.investedInr)}
-        />
-        <KpiCard
           icon={TrendingUp}
           label="Current Value"
-          value={formatUsd(totals.current)}
-          sublabel={formatInr(totals.currentInr)}
+          value={formatDisplayAmount(totals.currentInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.currentInr, altCurrency, ratesMap)}
+        />
+        <KpiCard
+          icon={Wallet}
+          label="Invested"
+          value={formatDisplayAmount(totals.investedInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.investedInr, altCurrency, ratesMap)}
         />
         <KpiCard
           icon={totals.gain >= 0 ? TrendingUp : TrendingDown}
           label="Gain / Loss"
-          value={formatUsd(totals.gain)}
+          value={formatDisplayAmount(totals.gainInr, displayCurrency, ratesMap)}
           badge={formatPct(totals.gainPct)}
           badgeTone={totals.gainPct}
-          sublabel={usdToInr ? `1 USD ≈ ${formatInr(usdToInr)}` : undefined}
+          sublabel={formatDisplayAmount(totals.gainInr, altCurrency, ratesMap)}
         />
         <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
       </div>
@@ -103,7 +110,15 @@ export function UsStocksPage() {
         )}
       </Card>
 
-      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <Card>
+        {rows.length === 0 ? (
+          <EmptyState />
+        ) : filteredRows.length === 0 ? (
+          <EmptyState message={`No results for "${query}"`} />
+        ) : (
+          <HoldingsTable columns={columns} rows={filteredRows} />
+        )}
+      </Card>
     </>
   )
 }

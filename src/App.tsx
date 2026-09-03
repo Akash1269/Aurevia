@@ -1,5 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import { PortfolioDataProvider } from './context/PortfolioDataContext'
+import { SearchProvider } from './context/SearchContext'
+import { SettingsProvider } from './context/SettingsContext'
 import { AppShell } from './layouts/AppShell'
 import { CurrencyConverterPage } from './pages/CurrencyConverterPage'
 import { EsopsPage } from './pages/EsopsPage'
@@ -11,26 +13,32 @@ import { OverviewPage } from './pages/OverviewPage'
 import { PfPage } from './pages/PfPage'
 import { ProjectionsPage } from './pages/ProjectionsPage'
 import { SavingsPage } from './pages/SavingsPage'
+import { SettingsPage } from './pages/SettingsPage'
 import { UsStocksPage } from './pages/UsStocksPage'
 
 function App() {
   return (
     <PortfolioDataProvider>
-      <Routes>
-        <Route element={<AppShell />}>
-          <Route path="/" element={<OverviewPage />} />
-          <Route path="/us-stocks" element={<UsStocksPage />} />
-          <Route path="/india-stocks" element={<IndiaStocksPage />} />
-          <Route path="/mutual-funds" element={<MutualFundsPage />} />
-          <Route path="/esops" element={<EsopsPage />} />
-          <Route path="/savings" element={<SavingsPage />} />
-          <Route path="/fixed-deposits" element={<FixedDepositsPage />} />
-          <Route path="/pf" element={<PfPage />} />
-          <Route path="/projections" element={<ProjectionsPage />} />
-          <Route path="/currency-converter" element={<CurrencyConverterPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+      <SettingsProvider>
+        <SearchProvider>
+          <Routes>
+            <Route element={<AppShell />}>
+              <Route path="/" element={<OverviewPage />} />
+              <Route path="/us-stocks" element={<UsStocksPage />} />
+              <Route path="/india-stocks" element={<IndiaStocksPage />} />
+              <Route path="/mutual-funds" element={<MutualFundsPage />} />
+              <Route path="/esops" element={<EsopsPage />} />
+              <Route path="/savings" element={<SavingsPage />} />
+              <Route path="/fixed-deposits" element={<FixedDepositsPage />} />
+              <Route path="/pf" element={<PfPage />} />
+              <Route path="/projections" element={<ProjectionsPage />} />
+              <Route path="/currency-converter" element={<CurrencyConverterPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Routes>
+        </SearchProvider>
+      </SettingsProvider>
     </PortfolioDataProvider>
   )
 }

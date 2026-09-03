@@ -1,6 +1,7 @@
-import { Bell, Moon, RefreshCw, Search, Sun } from 'lucide-react'
+import { Bell, Moon, RefreshCw, Search, Sun, X } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { usePortfolioData } from '../context/PortfolioDataContext'
+import { useSearch } from '../context/SearchContext'
 import { useTheme } from '../hooks/useTheme'
 import { NAV_ITEMS } from '../routes'
 import styles from './Header.module.css'
@@ -9,7 +10,8 @@ export function Header() {
   const { pathname } = useLocation()
   const { refresh, loading } = usePortfolioData()
   const { theme, toggleTheme } = useTheme()
-  const title = NAV_ITEMS.find((item) => item.to === pathname)?.label ?? 'iPot'
+  const { query, setQuery } = useSearch()
+  const title = pathname === '/settings' ? 'Settings' : (NAV_ITEMS.find((item) => item.to === pathname)?.label ?? 'Aurevia')
 
   return (
     <header className={styles.header}>
@@ -17,7 +19,19 @@ export function Header() {
       <div className={styles.actions}>
         <div className={styles.search}>
           <Search size={14} />
-          <span>Search</span>
+          <input
+            type="text"
+            className={styles.searchInput}
+            placeholder="Search this page"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search this page"
+          />
+          {query && (
+            <button type="button" className={styles.searchClear} onClick={() => setQuery('')} aria-label="Clear search">
+              <X size={13} />
+            </button>
+          )}
         </div>
         <button
           type="button"
@@ -41,7 +55,7 @@ export function Header() {
           <Bell size={15} />
         </button>
         <div className={styles.avatar} aria-hidden="true">
-          IP
+          AU
         </div>
       </div>
     </header>

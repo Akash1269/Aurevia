@@ -29,6 +29,34 @@
   font-size: var(--text-sm);
 }
 
+.searchInput {
+  border: none;
+  background: none;
+  outline: none;
+  width: 140px;
+  color: var(--text-h);
+  font: inherit;
+}
+
+.searchInput::placeholder {
+  color: var(--text);
+}
+
+.searchClear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.searchClear:hover {
+  color: var(--text-h);
+}
+
 .iconButton {
   display: flex;
   align-items: center;
@@ -81,7 +109,7 @@
   .header {
     padding: var(--space-3) var(--space-4) var(--space-1);
   }
-  .search span {
-    display: none;
+  .searchInput {
+    width: 80px;
   }
 }

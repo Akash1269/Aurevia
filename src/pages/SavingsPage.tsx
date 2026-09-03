@@ -8,8 +8,12 @@ import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
 import { Calendar, PiggyBank, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
+import { useSearch } from '../context/SearchContext'
+import { useSettings } from '../context/SettingsContext'
+import { formatDisplayAmount } from '../data/portfolio'
 import type { ComputedSavings } from '../data/types'
-import { formatInr } from '../utils/format'
+import { formatInr, otherCurrency } from '../utils/format'
+import { filterBySearch } from '../utils/search'
 import styles from './CategoryPage.module.css'
 
 const CURRENCY_SYMBOLS: Record<string, string> = { INR: '₹', USD: '$' }
@@ -53,10 +57,15 @@ const columns: HoldingsColumn<ComputedSavings>[] = [
 ]
 
 export function SavingsPage() {
-  const { results } = usePortfolioData()
+  const { results, ratesMap } = usePortfolioData()
   const { rows, totals, error } = results.savings
+  const { query } = useSearch()
+  const { displayCurrency } = useSettings()
 
   if (error) return <ErrorState message={error} />
+
+  const filteredRows = filterBySearch(rows, query)
+  const altCurrency = otherCurrency(displayCurrency)
 
   const weightedRate =
     totals.currentInr === 0
@@ -77,9 +86,19 @@ export function SavingsPage() {
   return (
     <>
       <div className={styles.kpiRow}>
-        <KpiCard icon={Wallet} label="Total Balance" value={formatInr(totals.currentInr)} />
+        <KpiCard
+          icon={Wallet}
+          label="Total Balance"
+          value={formatDisplayAmount(totals.currentInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.currentInr, altCurrency, ratesMap)}
+        />
         <KpiCard icon={Calendar} label="Weighted Avg Interest Rate" value={`${weightedRate.toFixed(2)}%`} />
-        <KpiCard icon={PiggyBank} label="Est. Annual Interest" value={formatInr(estimatedAnnualInterest)} />
+        <KpiCard
+          icon={PiggyBank}
+          label="Est. Annual Interest"
+          value={formatDisplayAmount(estimatedAnnualInterest, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(estimatedAnnualInterest, altCurrency, ratesMap)}
+        />
         <Card>
           {rows.length === 0 ? (
             <EmptyState />
@@ -91,7 +110,15 @@ export function SavingsPage() {
           )}
         </Card>
       </div>
-      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <Card>
+        {rows.length === 0 ? (
+          <EmptyState />
+        ) : filteredRows.length === 0 ? (
+          <EmptyState message={`No results for "${query}"`} />
+        ) : (
+          <HoldingsTable columns={columns} rows={filteredRows} />
+        )}
+      </Card>
     </>
   )
 }

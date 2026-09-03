@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding: var(--space-5) var(--space-3);
+  padding: var(--space-4);
   margin: var(--space-4);
   border-radius: var(--radius);
   background: var(--card-dark-bg);
@@ -13,9 +13,18 @@
 
 .logo {
   display: flex;
+  align-items: center;
+  gap: var(--space-2);
   color: var(--accent);
-  margin-bottom: var(--space-5);
+  margin: var(--space-6) 0;
   padding-left: var(--space-3);
+}
+
+.logoText {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--card-dark-text);
+  white-space: nowrap;
 }
 
 .nav {
@@ -56,14 +65,22 @@
   width: 100%;
   padding: var(--space-3);
   border-radius: var(--radius-sm);
-  border: none;
-  background: transparent;
-  color: var(--card-dark-muted);
-  cursor: not-allowed;
-  opacity: 0.5;
+  color: var(--card-dark-text);
+  text-decoration: none;
   margin-top: auto;
   font-size: var(--text-sm);
   text-align: left;
+}
+
+.gear:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--card-dark-text);
+}
+
+.gear.navItemActive,
+.gear.navItemActive:hover {
+  background: var(--card-dark-text);
+  color: var(--card-dark-bg);
 }
 
 @media (max-width: 720px) {
@@ -73,7 +90,8 @@
     height: calc(100% - var(--space-3) * 2);
   }
 
-  .navLabel {
+  .navLabel,
+  .logoText {
     display: none;
   }
 

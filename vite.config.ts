@@ -6,7 +6,7 @@ import { defineConfig } from 'vite'
 
 
 function buildDemoPublicDir(): string {
-  const dir = join(tmpdir(), 'ipot-demo-public')
+  const dir = join(tmpdir(), 'aurevia-demo-public')
   rmSync(dir, { recursive: true, force: true })
   mkdirSync(join(dir, 'data'), { recursive: true })
   cpSync('public/favicon.svg', join(dir, 'favicon.svg'))
@@ -17,7 +17,16 @@ function buildDemoPublicDir(): string {
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/iPot/' : '/',
+  base: mode === 'production' ? '/Aurevia/' : '/',
   plugins: [react()],
+  css: {
+    modules: {
+      // Readable class names (e.g. Sidebar-module__navItem) outside of
+      // production make it trivial to trace a rendered element back to its
+      // source file/rule in DevTools. Production keeps Vite's default short
+      // hashed names for smaller bundles.
+      generateScopedName: mode === 'production' ? undefined : '[name]__[local]',
+    },
+  },
   ...(mode === 'demo' ? { publicDir: buildDemoPublicDir() } : {}),
 }))

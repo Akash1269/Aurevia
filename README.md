@@ -1,6 +1,6 @@
-# iPot
+# Aurevia
 
-A personal investment dashboard. iPot reads your holdings from plain CSV
+A personal investment dashboard. Aurevia reads your holdings from plain CSV
 files and renders a single-page overview of your net worth across US
 stocks, India stocks, mutual funds, ESOPs, savings accounts, fixed
 deposits, and India Provident Fund (PF) — with everything converted to a

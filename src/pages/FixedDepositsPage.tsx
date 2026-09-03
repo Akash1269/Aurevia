@@ -8,9 +8,12 @@ import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
 import { Coins, Lock, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
-import { toInr } from '../data/portfolio'
+import { useSearch } from '../context/SearchContext'
+import { useSettings } from '../context/SettingsContext'
+import { formatDisplayAmount, toInr } from '../data/portfolio'
 import type { ComputedFixedDeposit } from '../data/types'
-import { formatDate, formatInr } from '../utils/format'
+import { formatDate, formatInr, otherCurrency } from '../utils/format'
+import { filterBySearch } from '../utils/search'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedFixedDeposit>[] = [
@@ -76,9 +79,13 @@ const columns: HoldingsColumn<ComputedFixedDeposit>[] = [
 export function FixedDepositsPage() {
   const { results, ratesMap } = usePortfolioData()
   const { rows, totals, error } = results.fixedDeposits
+  const { query } = useSearch()
+  const { displayCurrency } = useSettings()
 
   if (error) return <ErrorState message={error} />
 
+  const filteredRows = filterBySearch(rows, query)
+  const altCurrency = otherCurrency(displayCurrency)
   const totalMaturityInr = rows.reduce((sum, r) => sum + toInr(r.maturity_value, r.currency, ratesMap), 0)
   const totalInterestAtMaturity = totalMaturityInr - totals.investedInr
 
@@ -98,9 +105,24 @@ export function FixedDepositsPage() {
   return (
     <>
       <div className={styles.kpiRow}>
-        <KpiCard icon={Wallet} label="Total Principal" value={formatInr(totals.investedInr)} />
-        <KpiCard icon={Lock} label="Total Maturity Value" value={formatInr(totalMaturityInr)} sublabel="at full term" />
-        <KpiCard icon={Coins} label="Interest at Maturity" value={formatInr(totalInterestAtMaturity)} />
+        <KpiCard
+          icon={Wallet}
+          label="Total Principal"
+          value={formatDisplayAmount(totals.investedInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.investedInr, altCurrency, ratesMap)}
+        />
+        <KpiCard
+          icon={Lock}
+          label="Total Maturity Value"
+          value={formatDisplayAmount(totalMaturityInr, displayCurrency, ratesMap)}
+          sublabel="at full term"
+        />
+        <KpiCard
+          icon={Coins}
+          label="Interest at Maturity"
+          value={formatDisplayAmount(totalInterestAtMaturity, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totalInterestAtMaturity, altCurrency, ratesMap)}
+        />
         <Card>
           {rows.length === 0 ? (
             <EmptyState />
@@ -112,7 +134,15 @@ export function FixedDepositsPage() {
           )}
         </Card>
       </div>
-      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <Card>
+        {rows.length === 0 ? (
+          <EmptyState />
+        ) : filteredRows.length === 0 ? (
+          <EmptyState message={`No results for "${query}"`} />
+        ) : (
+          <HoldingsTable columns={columns} rows={filteredRows} />
+        )}
+      </Card>
     </>
   )
 }

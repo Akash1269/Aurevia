@@ -7,12 +7,15 @@ import { Card } from '../components/Card'
 import { InvestedVsCurrentChart, type InvestedVsCurrentDatum } from '../components/InvestedVsCurrentChart'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
+import { useSettings } from '../context/SettingsContext'
+import { formatDisplayAmount } from '../data/portfolio'
 import primitives from '../styles/primitives.module.css'
 import { formatInr, formatPct } from '../utils/format'
 import styles from './OverviewPage.module.css'
 
 export function OverviewPage() {
-  const { overview, topHoldings, currencyExposure, results } = usePortfolioData()
+  const { overview, topHoldings, currencyExposure, results, ratesMap } = usePortfolioData()
+  const { displayCurrency } = useSettings()
 
   const allocationSegments = overview.categories.map((c) => ({
     label: c.label,
@@ -56,7 +59,7 @@ export function OverviewPage() {
         <KpiCard
           icon={TrendingUp}
           label="Current Value"
-          value={formatInr(overview.totalCurrentInr)}
+          value={formatDisplayAmount(overview.totalCurrentInr, displayCurrency, ratesMap)}
           badge={formatPct(overview.totalGainPct)}
           badgeTone={overview.totalGainPct}
           sublabel={`${totalHoldings} holdings across ${overview.categories.length} categories`}
@@ -64,13 +67,13 @@ export function OverviewPage() {
         <KpiCard
           icon={Wallet}
           label="Total Invested"
-          value={formatInr(overview.totalInvestedInr)}
+          value={formatDisplayAmount(overview.totalInvestedInr, displayCurrency, ratesMap)}
           sublabel={`${categoriesUp} up · ${categoriesDown} down`}
         />
         <KpiCard
           icon={overview.totalGainInr >= 0 ? TrendingUp : TrendingDown}
           label="Overall Gain / Loss"
-          value={formatInr(overview.totalGainInr)}
+          value={formatDisplayAmount(overview.totalGainInr, displayCurrency, ratesMap)}
           sublabel={formatPct(overview.totalGainPct)}
         />
         <KpiCard
@@ -93,7 +96,7 @@ export function OverviewPage() {
             </Link>
           }
         >
-          <div className={styles.portfolioTotal}>{formatInr(overview.totalCurrentInr)}</div>
+          <div className={styles.portfolioTotal}>{formatDisplayAmount(overview.totalCurrentInr, displayCurrency, ratesMap)}</div>
           <div className={primitives.mutedText}>{formatPct(overview.totalGainPct)} all-time</div>
           <div className={styles.allocationSection}>
             <AllocationBar segments={allocationSegments} />

@@ -60,6 +60,22 @@ export function formatCurrency(value: number, currencyCode: string): string {
   }).format(value)
 }
 
+// Routes to the nicely-formatted INR/USD formatters (lakh/crore grouping for
+// INR, 2dp for USD) and falls back to a generic Intl formatter for any other
+// currency code loaded from currency-rates.csv.
+export function formatByCurrency(value: number, currencyCode: string): string {
+  if (currencyCode === 'INR') return formatInr(value)
+  if (currencyCode === 'USD') return formatUsd(value)
+  return formatCurrency(value, currencyCode)
+}
+
+// Only INR and USD exist in this app's data today, so "the other currency" -
+// shown as a KPI card's sublabel alongside the chosen display currency - is
+// simply whichever of the pair isn't currently selected.
+export function otherCurrency(code: string): string {
+  return code === 'INR' ? 'USD' : 'INR'
+}
+
 export function formatPct(value: number): string {
   return pctFormatter.format(value / 100)
 }

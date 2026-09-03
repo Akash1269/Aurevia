@@ -8,10 +8,13 @@ import { Building2, Calendar, Filter, History, ListChecks, ListFilter, Shield, W
 import { KpiCard } from '../components/KpiCard'
 import { MultiSelectDropdown } from '../components/MultiSelectDropdown'
 import { usePortfolioData } from '../context/PortfolioDataContext'
-import { buildPfAccountSummary } from '../data/portfolio'
+import { useSearch } from '../context/SearchContext'
+import { useSettings } from '../context/SettingsContext'
+import { buildPfAccountSummary, formatDisplayAmount } from '../data/portfolio'
 import type { PfCompanySummary, PfEntryType, PfStatementRow } from '../data/types'
 import primitives from '../styles/primitives.module.css'
-import { formatInr, formatMonth, monthSortKey } from '../utils/format'
+import { formatInr, formatMonth, monthSortKey, otherCurrency } from '../utils/format'
+import { filterBySearch } from '../utils/search'
 import categoryStyles from './CategoryPage.module.css'
 import styles from './PfPage.module.css'
 
@@ -105,14 +108,18 @@ function buildTimeline(rows: PfStatementRow[]): ContributionTimelinePoint[] {
 }
 
 export function PfPage() {
-  const { results, pfStatements } = usePortfolioData()
+  const { results, pfStatements, ratesMap } = usePortfolioData()
   const { error } = results.pf
+  const { query } = useSearch()
+  const { displayCurrency } = useSettings()
   const [companyFilter, setCompanyFilter] = useState(ALL_COMPANIES)
   const [typeFilter, setTypeFilter] = useState<Set<string>>(() => new Set(ENTRY_TYPE_OPTIONS.map((o) => o.value)))
 
   if (error) return <ErrorState message={error} />
 
   const accountSummary = buildPfAccountSummary(pfStatements.rows)
+  const filteredAccountSummary = filterBySearch(accountSummary, query)
+  const altCurrency = otherCurrency(displayCurrency)
 
   const totalContributions = accountSummary.reduce((sum, r) => sum + r.employee + r.employer, 0)
   const totalInterestEarned = accountSummary.reduce((sum, r) => sum + r.interestEarned, 0)
@@ -129,8 +136,9 @@ export function PfPage() {
   const interestTimeline = buildTimeline(statements.filter((r) => r.type === 'Interest'))
 
   const companies = Array.from(new Set(statements.map((r) => r.company))).sort()
-  const filteredStatements = statements.filter(
-    (r) => (companyFilter === ALL_COMPANIES || r.company === companyFilter) && typeFilter.has(r.type),
+  const filteredStatements = filterBySearch(
+    statements.filter((r) => (companyFilter === ALL_COMPANIES || r.company === companyFilter) && typeFilter.has(r.type)),
+    query,
   )
 
   const statementTotals = filteredStatements.reduce(
@@ -149,20 +157,31 @@ export function PfPage() {
         <KpiCard
           icon={Shield}
           label="Total Balance"
-          value={formatInr(totalAccountBalance)}
+          value={formatDisplayAmount(totalAccountBalance, displayCurrency, ratesMap)}
           sublabel="contributions + interest"
         />
         <KpiCard
           icon={Wallet}
           label="Total Contributions"
-          value={formatInr(totalContributions)}
+          value={formatDisplayAmount(totalContributions, displayCurrency, ratesMap)}
           sublabel="employee + employer, lifetime"
         />
-        <KpiCard icon={Calendar} label="Total Interest Earned" value={formatInr(totalInterestEarned)} />
+        <KpiCard
+          icon={Calendar}
+          label="Total Interest Earned"
+          value={formatDisplayAmount(totalInterestEarned, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totalInterestEarned, altCurrency, ratesMap)}
+        />
         <KpiCard icon={Building2} label="Accounts" value={String(accountSummary.length)} />
       </div>
       <Card icon={ListChecks} title="Account Summary">
-        {accountSummary.length === 0 ? <EmptyState /> : <HoldingsTable columns={accountSummaryColumns} rows={accountSummary} />}
+        {accountSummary.length === 0 ? (
+          <EmptyState />
+        ) : filteredAccountSummary.length === 0 ? (
+          <EmptyState message={`No results for "${query}"`} />
+        ) : (
+          <HoldingsTable columns={accountSummaryColumns} rows={filteredAccountSummary} />
+        )}
       </Card>
       {timeline.length > 0 && <ContributionTimelineChart data={timeline} />}
       {interestTimeline.length > 0 && (

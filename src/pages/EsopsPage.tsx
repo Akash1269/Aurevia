@@ -9,8 +9,12 @@ import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
 import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
+import { useSearch } from '../context/SearchContext'
+import { useSettings } from '../context/SettingsContext'
+import { formatDisplayAmount } from '../data/portfolio'
 import type { ComputedEsop } from '../data/types'
-import { formatCurrency, formatInr, formatPct, formatUsd } from '../utils/format'
+import { formatCurrency, formatInr, formatPct, otherCurrency } from '../utils/format'
+import { filterBySearch } from '../utils/search'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedEsop>[] = [
@@ -70,10 +74,15 @@ const columns: HoldingsColumn<ComputedEsop>[] = [
 ]
 
 export function EsopsPage() {
-  const { results } = usePortfolioData()
+  const { results, ratesMap } = usePortfolioData()
   const { rows, totals, error } = results.esops
+  const { query } = useSearch()
+  const { displayCurrency } = useSettings()
 
   if (error) return <ErrorState message={error} />
+
+  const filteredRows = filterBySearch(rows, query)
+  const altCurrency = otherCurrency(displayCurrency)
 
   const distribution = [...rows]
     .sort((a, b) => b.currentInr - a.currentInr)
@@ -88,24 +97,24 @@ export function EsopsPage() {
     <>
       <div className={styles.kpiRow}>
         <KpiCard
-          icon={Wallet}
-          label="Invested"
-          value={formatUsd(totals.invested)}
-          sublabel={formatInr(totals.investedInr)}
-        />
-        <KpiCard
           icon={TrendingUp}
           label="Current Value"
-          value={formatUsd(totals.current)}
-          sublabel={formatInr(totals.currentInr)}
+          value={formatDisplayAmount(totals.currentInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.currentInr, altCurrency, ratesMap)}
+        />
+        <KpiCard
+          icon={Wallet}
+          label="Invested"
+          value={formatDisplayAmount(totals.investedInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.investedInr, altCurrency, ratesMap)}
         />
         <KpiCard
           icon={totals.gain >= 0 ? TrendingUp : TrendingDown}
           label="Gain / Loss"
-          value={formatUsd(totals.gain)}
+          value={formatDisplayAmount(totals.gainInr, displayCurrency, ratesMap)}
           badge={formatPct(totals.gainPct)}
           badgeTone={totals.gainPct}
-          sublabel={formatInr(totals.gainInr)}
+          sublabel={formatDisplayAmount(totals.gainInr, altCurrency, ratesMap)}
         />
         <Card>
           {rows.length === 0 ? (
@@ -118,7 +127,15 @@ export function EsopsPage() {
           )}
         </Card>
       </div>
-      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <Card>
+        {rows.length === 0 ? (
+          <EmptyState />
+        ) : filteredRows.length === 0 ? (
+          <EmptyState message={`No results for "${query}"`} />
+        ) : (
+          <HoldingsTable columns={columns} rows={filteredRows} />
+        )}
+      </Card>
     </>
   )
 }

@@ -11,9 +11,13 @@ import { StockHeatmap, type HeatmapDatum } from '../components/StockHeatmap'
 import { LayoutGrid, ListChecks, PieChart, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
+import { useSearch } from '../context/SearchContext'
+import { useSettings } from '../context/SettingsContext'
+import { formatDisplayAmount } from '../data/portfolio'
 import type { ComputedIndiaStock } from '../data/types'
 import primitives from '../styles/primitives.module.css'
-import { formatInr, formatPct, formatSignedInr } from '../utils/format'
+import { formatInr, formatPct, formatSignedInr, otherCurrency } from '../utils/format'
+import { filterBySearch } from '../utils/search'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedIndiaStock>[] = [
@@ -64,8 +68,10 @@ const columns: HoldingsColumn<ComputedIndiaStock>[] = [
 ]
 
 export function IndiaStocksPage() {
-  const { results } = usePortfolioData()
+  const { results, ratesMap } = usePortfolioData()
   const { rows, totals, error } = results.indiaStocks
+  const { query } = useSearch()
+  const { displayCurrency } = useSettings()
 
   if (error) return <ErrorState message={error} />
 
@@ -84,18 +90,31 @@ export function IndiaStocksPage() {
   const sortedByGain = [...rows].sort((a, b) => b.gain - a.gain)
   const topGainers = sortedByGain.slice(0, 5)
   const topLosers = sortedByGain.slice(-5).reverse()
+  const filteredRows = filterBySearch(rows, query)
+  const altCurrency = otherCurrency(displayCurrency)
 
   return (
     <>
       <div className={styles.kpiRow}>
-        <KpiCard icon={Wallet} label="Invested" value={formatInr(totals.invested)} />
-        <KpiCard icon={TrendingUp} label="Current Value" value={formatInr(totals.current)} />
+        <KpiCard
+          icon={TrendingUp}
+          label="Current Value"
+          value={formatDisplayAmount(totals.currentInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.currentInr, altCurrency, ratesMap)}
+        />
+        <KpiCard
+          icon={Wallet}
+          label="Invested"
+          value={formatDisplayAmount(totals.investedInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.investedInr, altCurrency, ratesMap)}
+        />
         <KpiCard
           icon={totals.gain >= 0 ? TrendingUp : TrendingDown}
           label="Gain / Loss"
-          value={formatInr(totals.gain)}
+          value={formatDisplayAmount(totals.gainInr, displayCurrency, ratesMap)}
           badge={formatPct(totals.gainPct)}
           badgeTone={totals.gainPct}
+          sublabel={formatDisplayAmount(totals.gainInr, altCurrency, ratesMap)}
         />
         <KpiCard icon={ListChecks} label="Holdings" value={String(rows.length)} />
       </div>
@@ -158,7 +177,15 @@ export function IndiaStocksPage() {
         )}
       </Card>
 
-      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <Card>
+        {rows.length === 0 ? (
+          <EmptyState />
+        ) : filteredRows.length === 0 ? (
+          <EmptyState message={`No results for "${query}"`} />
+        ) : (
+          <HoldingsTable columns={columns} rows={filteredRows} />
+        )}
+      </Card>
     </>
   )
 }

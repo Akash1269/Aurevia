@@ -6,8 +6,12 @@ import { HoldingsTable, type HoldingsColumn } from '../components/HoldingsTable'
 import { Layers, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { KpiCard } from '../components/KpiCard'
 import { usePortfolioData } from '../context/PortfolioDataContext'
+import { useSearch } from '../context/SearchContext'
+import { useSettings } from '../context/SettingsContext'
+import { formatDisplayAmount } from '../data/portfolio'
 import type { ComputedMutualFund } from '../data/types'
-import { formatInr, formatPct } from '../utils/format'
+import { formatInr, formatPct, otherCurrency } from '../utils/format'
+import { filterBySearch } from '../utils/search'
 import styles from './CategoryPage.module.css'
 
 const columns: HoldingsColumn<ComputedMutualFund>[] = [
@@ -57,26 +61,50 @@ const columns: HoldingsColumn<ComputedMutualFund>[] = [
 ]
 
 export function MutualFundsPage() {
-  const { results } = usePortfolioData()
+  const { results, ratesMap } = usePortfolioData()
   const { rows, totals, error } = results.mutualFunds
+  const { query } = useSearch()
+  const { displayCurrency } = useSettings()
 
   if (error) return <ErrorState message={error} />
+
+  const filteredRows = filterBySearch(rows, query)
+  const altCurrency = otherCurrency(displayCurrency)
 
   return (
     <>
       <div className={styles.kpiRow}>
-        <KpiCard icon={Wallet} label="Invested" value={formatInr(totals.invested)} />
-        <KpiCard icon={TrendingUp} label="Current Value" value={formatInr(totals.current)} />
+        <KpiCard
+          icon={TrendingUp}
+          label="Current Value"
+          value={formatDisplayAmount(totals.currentInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.currentInr, altCurrency, ratesMap)}
+        />
+        <KpiCard
+          icon={Wallet}
+          label="Invested"
+          value={formatDisplayAmount(totals.investedInr, displayCurrency, ratesMap)}
+          sublabel={formatDisplayAmount(totals.investedInr, altCurrency, ratesMap)}
+        />
         <KpiCard
           icon={totals.gain >= 0 ? TrendingUp : TrendingDown}
           label="Gain / Loss"
-          value={formatInr(totals.gain)}
+          value={formatDisplayAmount(totals.gainInr, displayCurrency, ratesMap)}
           badge={formatPct(totals.gainPct)}
           badgeTone={totals.gainPct}
+          sublabel={formatDisplayAmount(totals.gainInr, altCurrency, ratesMap)}
         />
         <KpiCard icon={Layers} label="Number of Funds" value={String(rows.length)} />
       </div>
-      <Card>{rows.length === 0 ? <EmptyState /> : <HoldingsTable columns={columns} rows={rows} />}</Card>
+      <Card>
+        {rows.length === 0 ? (
+          <EmptyState />
+        ) : filteredRows.length === 0 ? (
+          <EmptyState message={`No results for "${query}"`} />
+        ) : (
+          <HoldingsTable columns={columns} rows={filteredRows} />
+        )}
+      </Card>
     </>
   )
 }
