@@ -1,3 +1,6 @@
 company,quantity,avg_purchase_price,current_price,currency
 Acme Corp,50,20.00,35.00,USD
 Globex Inc,100,8.50,12.00,USD
+Vantage Robotics Inc,60,15.00,12.00,USD
+Nordic Systems AB,40,45.00,40.00,EUR
+Initech Solutions,200,5.00,5.00,USD

@@ -1,16 +1,89 @@
 company,month,transaction_date,type,employee,employer,pension,notes
-Acme Corp,2019-12,01/01/2020,Contribution,5000,5000,1250,
+Acme Corp,2019-12,01/01/2020,Contribution,5000,5000,1250,Joining month - first PF contribution
 Acme Corp,2020-01,01/02/2020,Contribution,5000,5000,1250,
 Acme Corp,2020-02,01/03/2020,Contribution,5000,5000,1250,
+Acme Corp,2020-03,01/04/2020,Contribution,5000,5000,1250,
 Acme Corp,2020-03,31/03/2020,Interest,650,650,,Annual interest credit
-Acme Corp,2020-04,01/05/2020,Contribution,5100,5100,1250,
+Acme Corp,2020-04,01/05/2020,Contribution,5100,5100,1250,Annual increment applied
 Acme Corp,2020-05,01/06/2020,Contribution,5100,5100,1250,
 Acme Corp,2020-06,01/07/2020,Contribution,5100,5100,1250,
+Acme Corp,2020-07,01/08/2020,Contribution,5100,5100,1250,
+Acme Corp,2020-08,01/09/2020,Contribution,5100,5100,1250,
+Acme Corp,2020-09,01/10/2020,Contribution,5100,5100,1250,
+Acme Corp,2020-10,01/11/2020,Contribution,5100,5100,1250,
+Acme Corp,2020-11,01/12/2020,Contribution,5100,5100,1250,
+Acme Corp,2020-12,01/01/2021,Contribution,5100,5100,1250,
+Acme Corp,2021-01,01/02/2021,Contribution,5100,5100,1250,
+Acme Corp,2021-02,01/03/2021,Contribution,5100,5100,1250,
+Acme Corp,2021-03,01/04/2021,Contribution,5100,5100,1250,
 Acme Corp,2021-03,31/03/2021,Interest,1400,1400,,Annual interest credit
+Acme Corp,2021-04,01/05/2021,Contribution,5300,5300,1250,Annual increment applied
+Acme Corp,2021-05,01/06/2021,Contribution,5300,5300,1250,
+Acme Corp,2021-06,01/07/2021,Contribution,5300,5300,1250,
+Acme Corp,2021-07,01/08/2021,Contribution,5300,5300,1250,
+Acme Corp,2021-08,01/09/2021,Contribution,5300,5300,1250,
+Acme Corp,2021-09,01/10/2021,Contribution,5300,5300,1250,
+Acme Corp,2021-10,01/11/2021,Contribution,5300,5300,1250,
+Acme Corp,2021-11,01/12/2021,Contribution,5300,5300,1250,
+Acme Corp,2021-12,01/01/2022,Contribution,5300,5300,1250,
+Acme Corp,2022-01,01/02/2022,Contribution,5300,5300,1250,
+Acme Corp,2022-02,01/03/2022,Contribution,5300,5300,1250,Final contribution before resignation
+Acme Corp,2022-03,31/03/2022,Interest,1550,1550,,Final interest settlement before PF transfer to new employer
+Globex Inc,2022-04,01/05/2022,Contribution,6500,6500,1250,Joining month - first PF contribution at new employer
+Globex Inc,2022-05,01/06/2022,Contribution,6500,6500,1250,
+Globex Inc,2022-06,01/07/2022,Contribution,6500,6500,1250,
+Globex Inc,2022-07,01/08/2022,Contribution,6500,6500,1250,
+Globex Inc,2022-08,01/09/2022,Contribution,6500,6500,1250,
+Globex Inc,2022-09,01/10/2022,Contribution,6500,6500,1250,
+Globex Inc,2022-10,01/11/2022,Contribution,6500,6500,1250,
+Globex Inc,2022-11,01/12/2022,Contribution,6500,6500,1250,
 Globex Inc,2022-12,01/01/2023,Contribution,6500,6500,1250,
 Globex Inc,2023-01,01/02/2023,Contribution,6500,6500,1250,
 Globex Inc,2023-02,01/03/2023,Contribution,6500,6500,1250,
+Globex Inc,2023-03,01/04/2023,Contribution,6500,6500,1250,
 Globex Inc,2023-03,31/03/2023,Interest,780,780,,Annual interest credit
-Globex Inc,2023-04,01/05/2023,Contribution,6800,6800,1250,
+Globex Inc,2023-04,01/05/2023,Contribution,6800,6800,1250,Annual increment applied
 Globex Inc,2023-05,01/06/2023,Contribution,6800,6800,1250,
+Globex Inc,2023-06,01/07/2023,Contribution,6800,6800,1250,
+Globex Inc,2023-07,01/08/2023,Contribution,6800,6800,1250,
+Globex Inc,2023-08,01/09/2023,Contribution,6800,6800,1250,
+Globex Inc,2023-09,01/10/2023,Contribution,6800,6800,1250,
+Globex Inc,2023-10,01/11/2023,Contribution,6800,6800,1250,
+Globex Inc,2023-11,01/12/2023,Contribution,6800,6800,1250,
+Globex Inc,2023-12,01/01/2024,Contribution,6800,6800,1250,
+Globex Inc,2024-01,01/02/2024,Contribution,6800,6800,1250,
+Globex Inc,2024-02,01/03/2024,Contribution,6800,6800,1250,
+Globex Inc,2024-03,01/04/2024,Contribution,6800,6800,1250,
 Globex Inc,2024-03,31/03/2024,Interest,1650,1650,,Annual interest credit
+Globex Inc,2024-04,01/05/2024,Contribution,7100,7100,1250,Annual increment applied
+Globex Inc,2024-05,01/06/2024,Contribution,7100,7100,1250,
+Globex Inc,2024-06,01/07/2024,Contribution,7100,7100,1250,Final contribution before resignation
+Globex Inc,2025-03,31/03/2025,Interest,1050,1050,,Final interest settlement (part year) before PF transfer to new employer
+Initech Solutions,2024-07,01/08/2024,Contribution,9000,9000,1250,Joining month - first PF contribution at new employer
+Initech Solutions,2024-08,01/09/2024,Contribution,9000,9000,1250,
+Initech Solutions,2024-09,01/10/2024,Contribution,9000,9000,1250,
+Initech Solutions,2024-10,01/11/2024,Contribution,9000,9000,1250,
+Initech Solutions,2024-11,01/12/2024,Contribution,9000,9000,1250,
+Initech Solutions,2024-12,01/01/2025,Contribution,9000,9000,1250,
+Initech Solutions,2025-01,01/02/2025,Contribution,9000,9000,1250,
+Initech Solutions,2025-02,01/03/2025,Contribution,9000,9000,1250,
+Initech Solutions,2025-03,01/04/2025,Contribution,9000,9000,1250,
+Initech Solutions,2025-03,31/03/2025,Interest,900,900,,Annual interest credit (part year)
+Initech Solutions,2025-04,01/05/2025,Contribution,9500,9500,1250,Annual increment applied
+Initech Solutions,2025-05,01/06/2025,Contribution,9500,9500,1250,
+Initech Solutions,2025-06,01/07/2025,Contribution,9500,9500,1250,
+Initech Solutions,2025-07,01/08/2025,Contribution,9500,9500,1250,
+Initech Solutions,2025-08,01/09/2025,Contribution,9500,9500,1250,
+Initech Solutions,2025-09,01/10/2025,Contribution,9500,9500,1250,
+Initech Solutions,2025-10,01/11/2025,Contribution,9500,9500,1250,
+Initech Solutions,2025-11,01/12/2025,Contribution,9500,9500,1250,
+Initech Solutions,2025-12,01/01/2026,Contribution,9500,9500,1250,
+Initech Solutions,2026-01,01/02/2026,Contribution,9500,9500,1250,
+Initech Solutions,2026-02,01/03/2026,Contribution,9500,9500,1250,
+Initech Solutions,2026-03,01/04/2026,Contribution,9500,9500,1250,
+Initech Solutions,2026-03,31/03/2026,Interest,1950,1950,,Annual interest credit
+Initech Solutions,2026-04,01/05/2026,Contribution,10200,10200,1250,Annual increment applied
+Initech Solutions,2026-05,01/06/2026,Contribution,10200,10200,1250,
+Initech Solutions,2026-06,01/07/2026,Contribution,10200,10200,1250,
+Initech Solutions,2026-07,01/08/2026,Contribution,10200,10200,1250,
+Initech Solutions,2026-08,01/09/2026,Contribution,10200,10200,1250,

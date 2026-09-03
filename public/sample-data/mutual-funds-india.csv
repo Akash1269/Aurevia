@@ -1,3 +1,9 @@
 fund_name,category,units,avg_nav,current_nav
 Sample Large Cap Fund - Direct Plan,Equity - Large Cap,500.5,45.20,58.75
 Sample Flexi Cap Fund - Direct Plan,Equity - Flexi Cap,300.25,60.10,72.30
+Sample Mid Cap Fund - Direct Plan,Equity - Mid Cap,220.75,38.50,33.20
+Sample Small Cap Fund - Direct Plan,Equity - Small Cap,150.0,25.00,27.10
+Sample Tax Saver ELSS Fund - Direct Plan,Equity - ELSS,400.0,32.00,41.50
+Sample Short Duration Debt Fund - Direct Plan,Debt - Short Duration,1000.0,18.50,19.10
+Sample Balanced Advantage Fund - Direct Plan,Hybrid - Balanced Advantage,350.0,22.00,22.00
+Sample Nifty 50 Index Fund - Direct Plan,Index - Nifty 50,600.0,140.00,168.00

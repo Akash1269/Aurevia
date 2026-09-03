@@ -1,3 +1,7 @@
 bank_name,account_type,balance,interest_rate_pct,currency
 Sample Bank,Savings,500000,3.5,INR
-Demo National Bank,Checking,8000,0.5,USD
+Demo National Bank,Checking,8000,0.1,USD
+HDFC Bank,Salary,180000,3.0,INR
+Kotak 811,Savings,45000,6.0,INR
+Global NRI Bank,NRE Savings,3200,1.5,USD
+Wise,Multi-Currency,2500,0.0,EUR

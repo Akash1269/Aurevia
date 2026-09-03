@@ -1,3 +1,6 @@
 bank_name,principal,interest_rate_pct,start_date,maturity_date,maturity_value,currency
 Sample Bank,200000,6.5,2025-01-01,2026-01-01,213000,INR
 Demo Bank,300000,7.0,2025-06-01,2027-06-01,344000,INR
+Utkarsh Small Finance Bank,150000,8.25,2026-08-01,2028-08-01,175771,INR
+State Trust Bank,500000,6.75,2023-01-01,2028-01-01,693122,INR
+Global NRI Bank,5000,4.5,2025-03-01,2026-03-01,5225,USD

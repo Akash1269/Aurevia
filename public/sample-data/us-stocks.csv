@@ -2,3 +2,7 @@ symbol,name,quantity,avg_buy_price_usd,current_price_usd
 AAPL,Apple Inc,5,150.00,190.00
 MSFT,Microsoft Corp,3,280.00,410.00
 GOOGL,Alphabet Inc,2,120.00,165.00
+NVDA,NVIDIA Corp,1.5,450.00,900.00
+TSLA,Tesla Inc,4,260.00,210.00
+PLTR,Palantir Technologies,20,18.00,17.50
+JNJ,Johnson & Johnson,6,165.00,165.00
