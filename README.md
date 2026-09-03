@@ -1,30 +1,67 @@
 # Aurevia
 
-A personal investment dashboard. Aurevia reads your holdings from plain CSV
-files and renders a single-page overview of your net worth across US
-stocks, India stocks, mutual funds, ESOPs, savings accounts, fixed
-deposits, and India Provident Fund (PF) — with everything converted to a
-common currency (INR) so you can see one true total.
+**[Live demo →](https://akash1269.github.io/Aurevia/)**
 
-There's no backend, no database, and no account system: your data lives
-in CSV files under `public/data/`, and the app is just a static site that
-reads them.
+A personal net-worth and investment dashboard that runs entirely in your
+browser. Point it at plain CSV files — no signup, no backend, no data ever
+leaving your machine — and it rolls everything up into one true number: what
+you're actually worth, right now, across every account and currency you hold
+money in.
 
-## Features
+## Why Aurevia
 
-- **Overview** — total net worth, category breakdown, top holdings, and
-  currency exposure, all rolled up from every category below.
-- **Per-category pages** — US Stocks, India Stocks, Mutual Funds, ESOPs,
-  Savings Accounts, Fixed Deposits, and India PF, each with KPI tiles,
-  sortable holdings tables, and allocation charts.
-- **India PF** — a dedicated ledger view: account summary by employer,
-  contribution/interest timelines, and a filterable, searchable
-  transaction history.
-- **Projections** — forward-looking growth projections based on your
-  current portfolio.
-- **Currency Converter** — a quick INR/USD (and other currency) converter
-  using the same exchange rates the dashboard uses internally.
-- **Light/dark theme**, responsive layout.
+Most people's money is scattered: a US brokerage, an Indian demat account,
+a couple of mutual funds, ESOPs from an employer, a savings account or two,
+a fixed deposit, a Provident Fund statement nobody reads. Getting a single
+answer to "what am I worth today, in one currency?" usually means opening
+five apps and doing the math by hand.
+
+Aurevia solves that by reading everything from CSV files you control and
+converting it all to one display currency, so you can:
+
+- See your **total net worth** and how it's split across asset classes and
+  currencies, updated the moment you edit a CSV.
+- Track **each account type** — stocks, funds, ESOPs, cash, deposits, PF —
+  with the KPIs and holdings detail specific to it, not a generic table.
+- Model **where you're headed**, not just where you are, with compounding
+  growth projections per asset class.
+- Keep everything **private by default** — sample/demo data ships with the
+  app so you can try it immediately, and your real numbers stay in local
+  CSV files that are never uploaded anywhere.
+
+## Pages
+
+| Page | What it shows |
+| --- | --- |
+| **Overview** | Total net worth, category breakdown, top holdings across every account, and currency exposure — the one-screen answer to "what am I worth?" |
+| **US Stocks** | KPI tiles (value, gain/loss), a sortable holdings table, and an allocation chart for your US equity positions. |
+| **India Stocks** | Same as US Stocks, plus sector breakdown for Indian equities. |
+| **Mutual Funds** | Units, NAV, and category breakdown for your India mutual fund holdings. |
+| **ESOPs** | Employer stock option grants tracked at current vs. average purchase price, in their native currency. |
+| **Savings Accounts** | Balances across banks and account types, with interest rate shown per account. |
+| **Fixed Deposits** | Principal, tenure, and maturity value per deposit, with weighted average interest rate. |
+| **India PF** | A dedicated ledger: account summary by employer, a contribution/interest timeline, and a filterable, searchable transaction history parsed straight from your PF passbook data. |
+| **Projections** | Forward-looking compounding projections per asset class over a configurable tenure, with editable growth-rate assumptions per category (defaults to your actual savings/FD interest rates where known). |
+| **Currency Converter** | A quick INR/USD (and other currency) converter using the same exchange rates the rest of the dashboard converts with. |
+| **Settings** | Switch between sample data and your own; point the app at a local folder of CSVs (via the File System Access API, in supported browsers); set display currency, theme, and which sidebar tabs are visible. |
+
+## How it helps you track your finances
+
+- **One number, every currency.** Every holding — INR, USD, or otherwise —
+  is converted to a single display currency using rates you control, so
+  "net worth" is actually one number instead of seven.
+- **Per-asset detail without losing the big picture.** Drill from the
+  Overview into any category for holdings-level detail, then back out to
+  see how that category fits into the whole.
+- **Goal planning.** Projections let you ask "if I keep contributing at
+  this rate, where am I in 10/15/20 years?" per asset class, using either
+  realistic defaults or your own assumptions.
+- **No account, no server, no risk.** There's no login and nothing to
+  breach — the app is a static site, and your financial data lives only in
+  CSV files on your own disk (or bundled sample data if you're just
+  exploring).
+- **Try before you trust it.** Sample data is on by default so you can see
+  the whole app working before pointing it at your real numbers.
 
 ## Getting started
 
@@ -35,18 +72,26 @@ npm run dev
 
 Then open the printed local URL (typically `http://localhost:5173`).
 
+Or just use the [hosted version](https://akash1269.github.io/Aurevia/) —
+it ships with sample data, and you can switch to your own CSVs from
+**Settings** without installing anything.
+
 ## Scripts
 
 - `npm run dev` — start the dev server
 - `npm run build` — type-check and produce a production build
 - `npm run preview` — preview the production build
-- `npm run lint` — run oxlint
+- `npm run lint` — run eslint
 
 ## Using it with your own data
 
 Everything the dashboard displays is sourced from CSV files in
 [`public/data/`](public/data). Edit these in place (or replace them) and
 reload the page — there's no build step required for data changes in dev.
+On the hosted version, use **Settings → Data Source → Choose Folder** to
+point the app at a folder of CSVs on your own computer instead (Chrome/Edge
+only — this uses the File System Access API, reads live from disk, and
+never uploads anything).
 
 | File                     | Category         | Key columns                                                                                    |
 | ------------------------ | ---------------- | ---------------------------------------------------------------------------------------------- |
@@ -71,6 +116,11 @@ Notes:
   that currency won't convert to INR correctly.
 - File paths are resolved through [`public/data/manifest.json`](public/data/manifest.json).
   If you rename or move a CSV, update its entry there.
+
+## Deployment
+
+Pushes to `main` auto-deploy to GitHub Pages via
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
 
 ## Tech stack
 
