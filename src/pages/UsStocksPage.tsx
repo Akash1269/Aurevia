@@ -44,7 +44,13 @@ const columns: HoldingsColumn<ComputedUsStock>[] = [
     sortValue: (r) => r.current_price_usd,
     hideOnMobile: true,
   },
-  { key: 'invested', label: 'Invested', align: 'right', render: (r) => formatUsd(r.invested), sortValue: (r) => r.invested },
+  {
+    key: 'invested',
+    label: 'Invested',
+    align: 'right',
+    render: (r) => formatUsd(r.invested),
+    sortValue: (r) => r.invested,
+  },
   { key: 'value', label: 'Value', align: 'right', render: (r) => formatUsd(r.current), sortValue: (r) => r.current },
   {
     key: 'gain',

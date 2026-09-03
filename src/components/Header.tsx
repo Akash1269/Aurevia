@@ -11,7 +11,8 @@ export function Header() {
   const { refresh, loading } = usePortfolioData()
   const { theme, toggleTheme } = useTheme()
   const { query, setQuery } = useSearch()
-  const title = pathname === '/settings' ? 'Settings' : (NAV_ITEMS.find((item) => item.to === pathname)?.label ?? 'Aurevia')
+  const title =
+    pathname === '/settings' ? 'Settings' : (NAV_ITEMS.find((item) => item.to === pathname)?.label ?? 'Aurevia')
 
   return (
     <header className={styles.header}>

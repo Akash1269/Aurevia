@@ -14,7 +14,9 @@ export function SettingsPage() {
   const { displayCurrency, setDisplayCurrency, hiddenTabs, setTabHidden } = useSettings()
   const { theme, setTheme } = useTheme()
 
-  const currencyOptions = Object.keys(ratesMap).sort((a, b) => (a === 'INR' ? -1 : b === 'INR' ? 1 : a.localeCompare(b)))
+  const currencyOptions = Object.keys(ratesMap).sort((a, b) =>
+    a === 'INR' ? -1 : b === 'INR' ? 1 : a.localeCompare(b),
+  )
   const visibleCount = NAV_ITEMS.length - hiddenTabs.size
 
   return (
@@ -23,7 +25,11 @@ export function SettingsPage() {
         icon={Coins}
         title="Display Currency"
         actions={
-          <select className={styles.select} value={displayCurrency} onChange={(e) => setDisplayCurrency(e.target.value)}>
+          <select
+            className={styles.select}
+            value={displayCurrency}
+            onChange={(e) => setDisplayCurrency(e.target.value)}
+          >
             {currencyOptions.map((code) => (
               <option key={code} value={code}>
                 {CURRENCY_LABELS[code] ?? code}
@@ -33,8 +39,8 @@ export function SettingsPage() {
         }
       >
         <p className={styles.description}>
-          The primary figure on KPI cards across the app is shown in this currency, converted using the live rates
-          from Currency Converter.
+          The primary figure on KPI cards across the app is shown in this currency, converted using the live rates from
+          Currency Converter.
         </p>
       </Card>
 
@@ -64,7 +70,9 @@ export function SettingsPage() {
       </Card>
 
       <Card icon={Eye} title="Visible Tabs">
-        <p className={styles.description}>Choose which sections appear in the sidebar. At least one must stay visible.</p>
+        <p className={styles.description}>
+          Choose which sections appear in the sidebar. At least one must stay visible.
+        </p>
         <div className={styles.tabPills}>
           {NAV_ITEMS.map((item) => {
             const isHidden = hiddenTabs.has(item.to)

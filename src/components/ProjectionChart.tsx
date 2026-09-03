@@ -114,7 +114,15 @@ export function ProjectionChart({ data, series }: { data: ProjectionStackPoint[]
             formatter={(value: string) => series.find((s) => s.key === value)?.label ?? value}
           />
           {series.map((s) => (
-            <Bar key={s.key} dataKey={s.key} name={s.key} stackId="portfolio" fill={s.color} stroke="var(--card-bg)" strokeWidth={2} />
+            <Bar
+              key={s.key}
+              dataKey={s.key}
+              name={s.key}
+              stackId="portfolio"
+              fill={s.color}
+              stroke="var(--card-bg)"
+              strokeWidth={2}
+            />
           ))}
         </BarChart>
       </ResponsiveContainer>

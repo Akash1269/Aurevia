@@ -40,7 +40,7 @@
   gap: var(--space-3);
   padding: var(--space-3);
   border-radius: var(--radius-sm);
-  color: var( --card-dark-text);
+  color: var(--card-dark-text);
   text-decoration: none;
   /* font-weight: 500; */
   font-size: var(--text-base);

@@ -48,16 +48,16 @@ Everything the dashboard displays is sourced from CSV files in
 [`public/data/`](public/data). Edit these in place (or replace them) and
 reload the page — there's no build step required for data changes in dev.
 
-| File | Category | Key columns |
-|---|---|---|
-| `us-stocks.csv` | US Stocks | `symbol, name, quantity, avg_buy_price_usd, current_price_usd` |
-| `india-stocks.csv` | India Stocks | `symbol, name, sector, quantity, avg_buy_price_inr, current_price_inr` |
-| `mutual-funds-india.csv` | Mutual Funds | `fund_name, category, units, avg_nav, current_nav` |
-| `esops.csv` | ESOPs | `company, quantity, avg_purchase_price, current_price, currency` |
-| `savings-accounts.csv` | Savings Accounts | `bank_name, account_type, balance, interest_rate_pct, currency` |
-| `fixed-deposits.csv` | Fixed Deposits | `bank_name, principal, interest_rate_pct, start_date, maturity_date, maturity_value, currency` |
-| `pf.csv` | India PF | `company, month, transaction_date, type, employee, employer, pension, notes` |
-| `currency-rates.csv` | Exchange rates | `currency_code, rate_to_inr` — used to convert every non-INR holding to INR |
+| File                     | Category         | Key columns                                                                                    |
+| ------------------------ | ---------------- | ---------------------------------------------------------------------------------------------- |
+| `us-stocks.csv`          | US Stocks        | `symbol, name, quantity, avg_buy_price_usd, current_price_usd`                                 |
+| `india-stocks.csv`       | India Stocks     | `symbol, name, sector, quantity, avg_buy_price_inr, current_price_inr`                         |
+| `mutual-funds-india.csv` | Mutual Funds     | `fund_name, category, units, avg_nav, current_nav`                                             |
+| `esops.csv`              | ESOPs            | `company, quantity, avg_purchase_price, current_price, currency`                               |
+| `savings-accounts.csv`   | Savings Accounts | `bank_name, account_type, balance, interest_rate_pct, currency`                                |
+| `fixed-deposits.csv`     | Fixed Deposits   | `bank_name, principal, interest_rate_pct, start_date, maturity_date, maturity_value, currency` |
+| `pf.csv`                 | India PF         | `company, month, transaction_date, type, employee, employer, pension, notes`                   |
+| `currency-rates.csv`     | Exchange rates   | `currency_code, rate_to_inr` — used to convert every non-INR holding to INR                    |
 
 Notes:
 

@@ -64,7 +64,9 @@ export function CurrencyConverterPage() {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([code, rate]) => ({ displayName: code, code, rate }))
 
-  const topCurrencies = MAJOR_CURRENCY_CANDIDATES.filter((code) => code !== displayCurrency && ratesMap[code] !== undefined).slice(0, 4)
+  const topCurrencies = MAJOR_CURRENCY_CANDIDATES.filter(
+    (code) => code !== displayCurrency && ratesMap[code] !== undefined,
+  ).slice(0, 4)
   const columns = buildColumns(displayCurrency, ratesMap)
 
   return (

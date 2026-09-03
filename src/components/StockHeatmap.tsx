@@ -44,7 +44,15 @@ function CellContent({
 
   return (
     <g>
-      <rect x={x} y={y} width={width} height={height} fill={heatColor(gainPct)} stroke="var(--card-bg)" strokeWidth={2} />
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={heatColor(gainPct)}
+        stroke="var(--card-bg)"
+        strokeWidth={2}
+      />
       {(showGain || showCodeOnly) && (
         <>
           <clipPath id={clipId}>
@@ -110,7 +118,12 @@ export function StockHeatmap({
   const sorted = [...data].sort((a, b) => b.size - a.size)
   return (
     <ResponsiveContainer width="100%" height={280}>
-      <Treemap data={sorted} dataKey="size" isAnimationActive={false} content={<CellContent formatCompact={formatCompact} />}>
+      <Treemap
+        data={sorted}
+        dataKey="size"
+        isAnimationActive={false}
+        content={<CellContent formatCompact={formatCompact} />}
+      >
         <Tooltip content={<HeatmapTooltip formatFull={formatFull} />} />
       </Treemap>
     </ResponsiveContainer>

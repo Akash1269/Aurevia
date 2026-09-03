@@ -56,7 +56,13 @@ const columns: HoldingsColumn<ComputedIndiaStock>[] = [
     sortValue: (r) => r.current_price_inr,
     hideOnMobile: true,
   },
-  { key: 'invested', label: 'Invested', align: 'right', render: (r) => formatInr(r.invested), sortValue: (r) => r.invested },
+  {
+    key: 'invested',
+    label: 'Invested',
+    align: 'right',
+    render: (r) => formatInr(r.invested),
+    sortValue: (r) => r.invested,
+  },
   { key: 'value', label: 'Value', align: 'right', render: (r) => formatInr(r.current), sortValue: (r) => r.current },
   {
     key: 'gain',

@@ -93,7 +93,8 @@ export function ProjectionsPage() {
   const totalProjected = categories.reduce((sum, c) => sum + projectedValue(c.currentInr, rateFor(c), tenure), 0)
   const totalGrowth = totalProjected - totalCurrent
   const totalGrowthPct = totalCurrent === 0 ? 0 : (totalGrowth / totalCurrent) * 100
-  const blendedCagr = totalCurrent === 0 || tenure === 0 ? 0 : ((totalProjected / totalCurrent) ** (1 / tenure) - 1) * 100
+  const blendedCagr =
+    totalCurrent === 0 || tenure === 0 ? 0 : ((totalProjected / totalCurrent) ** (1 / tenure) - 1) * 100
 
   const series: ProjectionSeriesDef[] = useMemo(
     () => categories.map((c, i) => ({ key: c.key, label: c.displayName, color: colorForIndex(i) })),
@@ -215,7 +216,11 @@ export function ProjectionsPage() {
                 />
               </div>
             </div>
-            <button type="button" className={`${primitives.pillButtonLight} ${styles.resetButton}`} onClick={handleReset}>
+            <button
+              type="button"
+              className={`${primitives.pillButtonLight} ${styles.resetButton}`}
+              onClick={handleReset}
+            >
               <RotateCcw size={14} />
               Reset to defaults
             </button>

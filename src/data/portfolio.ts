@@ -104,7 +104,9 @@ function gainPctOf(invested: number, gain: number): number {
   return invested === 0 ? 0 : (gain / invested) * 100
 }
 
-function sumTotals(rows: { invested: number; current: number; investedInr: number; currentInr: number }[]): CategoryTotals {
+function sumTotals(
+  rows: { invested: number; current: number; investedInr: number; currentInr: number }[],
+): CategoryTotals {
   const invested = rows.reduce((sum, r) => sum + r.invested, 0)
   const current = rows.reduce((sum, r) => sum + r.current, 0)
   const investedInr = rows.reduce((sum, r) => sum + r.investedInr, 0)

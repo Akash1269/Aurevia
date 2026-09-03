@@ -69,7 +69,13 @@ export function CurrencyConverter({ ratesMap }: { ratesMap: RatesMap }) {
             </div>
           </div>
 
-          <button type="button" className={styles.swapButton} onClick={swap} title="Swap currencies" aria-label="Swap currencies">
+          <button
+            type="button"
+            className={styles.swapButton}
+            onClick={swap}
+            title="Swap currencies"
+            aria-label="Swap currencies"
+          >
             <ArrowLeftRight size={16} />
           </button>
 

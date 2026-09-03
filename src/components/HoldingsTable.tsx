@@ -53,7 +53,9 @@ export function HoldingsTable<T extends { displayName: string }>({
   function handleSort(column: HoldingsColumn<T>) {
     if (!column.sortValue) return
     setSort((prev) =>
-      prev?.key === column.key ? { key: column.key, direction: prev.direction === 'asc' ? 'desc' : 'asc' } : { key: column.key, direction: 'asc' },
+      prev?.key === column.key
+        ? { key: column.key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
+        : { key: column.key, direction: 'asc' },
     )
   }
 
@@ -65,7 +67,11 @@ export function HoldingsTable<T extends { displayName: string }>({
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={cx(col.align === 'right' && styles.right, col.sortValue && styles.sortable, col.hideOnMobile && styles.hideOnMobile)}
+                className={cx(
+                  col.align === 'right' && styles.right,
+                  col.sortValue && styles.sortable,
+                  col.hideOnMobile && styles.hideOnMobile,
+                )}
                 onClick={() => handleSort(col)}
               >
                 <span className={styles.headerLabel}>
@@ -92,7 +98,10 @@ export function HoldingsTable<T extends { displayName: string }>({
           {sortedRows.map((row, index) => (
             <tr key={`${row.displayName}-${index}`}>
               {columns.map((col) => (
-                <td key={col.key} className={cx(col.align === 'right' && styles.right, col.hideOnMobile && styles.hideOnMobile)}>
+                <td
+                  key={col.key}
+                  className={cx(col.align === 'right' && styles.right, col.hideOnMobile && styles.hideOnMobile)}
+                >
                   {col.truncate ? (
                     <span className={styles.truncate} style={{ maxWidth: col.truncate }} title={col.title?.(row)}>
                       {col.render(row)}
@@ -109,7 +118,10 @@ export function HoldingsTable<T extends { displayName: string }>({
           <tfoot>
             <tr className={styles.footerRow}>
               {columns.map((col) => (
-                <td key={col.key} className={cx(col.align === 'right' && styles.right, col.hideOnMobile && styles.hideOnMobile)}>
+                <td
+                  key={col.key}
+                  className={cx(col.align === 'right' && styles.right, col.hideOnMobile && styles.hideOnMobile)}
+                >
                   {footer[col.key] ?? ''}
                 </td>
               ))}

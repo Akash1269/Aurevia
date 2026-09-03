@@ -96,7 +96,9 @@ export function OverviewPage() {
             </Link>
           }
         >
-          <div className={styles.portfolioTotal}>{formatDisplayAmount(overview.totalCurrentInr, displayCurrency, ratesMap)}</div>
+          <div className={styles.portfolioTotal}>
+            {formatDisplayAmount(overview.totalCurrentInr, displayCurrency, ratesMap)}
+          </div>
           <div className={primitives.mutedText}>{formatPct(overview.totalGainPct)} all-time</div>
           <div className={styles.allocationSection}>
             <AllocationBar segments={allocationSegments} />
@@ -138,7 +140,10 @@ export function OverviewPage() {
                   {entry.code}
                 </span>
                 <span className={styles.exposureBarTrack}>
-                  <span className={styles.exposureBarFill} style={{ width: `${(entry.amountInr / maxExposure) * 100}%` }} />
+                  <span
+                    className={styles.exposureBarFill}
+                    style={{ width: `${(entry.amountInr / maxExposure) * 100}%` }}
+                  />
                 </span>
                 <span>{formatInr(entry.amountInr)}</span>
               </div>

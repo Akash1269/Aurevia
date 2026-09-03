@@ -34,8 +34,20 @@ const accountSummaryColumns: HoldingsColumn<PfCompanySummary>[] = [
     title: (r) => r.company,
   },
   { key: 'years', label: 'Years', render: (r) => `${r.fromYear}–${r.toYear}`, sortValue: (r) => r.fromYear },
-  { key: 'employee', label: 'Employee', align: 'right', render: (r) => formatInr(r.employee), sortValue: (r) => r.employee },
-  { key: 'employer', label: 'Employer', align: 'right', render: (r) => formatInr(r.employer), sortValue: (r) => r.employer },
+  {
+    key: 'employee',
+    label: 'Employee',
+    align: 'right',
+    render: (r) => formatInr(r.employee),
+    sortValue: (r) => r.employee,
+  },
+  {
+    key: 'employer',
+    label: 'Employer',
+    align: 'right',
+    render: (r) => formatInr(r.employer),
+    sortValue: (r) => r.employer,
+  },
   {
     key: 'interest_earned',
     label: 'Interest Earned',
@@ -69,8 +81,20 @@ const statementColumns: HoldingsColumn<PfStatementRow>[] = [
     render: (r) => (r.type === 'Interest' ? <span className={primitives.badge}>{r.type}</span> : r.type),
     sortValue: (r) => r.type,
   },
-  { key: 'employee', label: 'Employee', align: 'right', render: (r) => formatInr(r.employee), sortValue: (r) => r.employee },
-  { key: 'employer', label: 'Employer', align: 'right', render: (r) => formatInr(r.employer), sortValue: (r) => r.employer },
+  {
+    key: 'employee',
+    label: 'Employee',
+    align: 'right',
+    render: (r) => formatInr(r.employee),
+    sortValue: (r) => r.employee,
+  },
+  {
+    key: 'employer',
+    label: 'Employer',
+    align: 'right',
+    render: (r) => formatInr(r.employer),
+    sortValue: (r) => r.employer,
+  },
   {
     key: 'pension',
     label: 'Pension',
@@ -137,7 +161,9 @@ export function PfPage() {
 
   const companies = Array.from(new Set(statements.map((r) => r.company))).sort()
   const filteredStatements = filterBySearch(
-    statements.filter((r) => (companyFilter === ALL_COMPANIES || r.company === companyFilter) && typeFilter.has(r.type)),
+    statements.filter(
+      (r) => (companyFilter === ALL_COMPANIES || r.company === companyFilter) && typeFilter.has(r.type),
+    ),
     query,
   )
 
